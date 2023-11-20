@@ -8,14 +8,14 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "MonsterCharacter.generated.h"
+#include "WheelCharacter.generated.h"
 
 UCLASS()
-class CURSEEL_API AMonsterCharacter : public ACharacterBase
+class CURSEEL_API AWheelCharacter : public ACharacterBase
 {
 	GENERATED_BODY()
 public:
-	AMonsterCharacter (const class FObjectInitializer& ObjectInitializer);
+	AWheelCharacter(const class FObjectInitializer& ObjectInitializer);
 
 protected:
 
