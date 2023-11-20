@@ -3,7 +3,7 @@
 // Sets default values
 ACharacterBase::ACharacterBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
 
@@ -13,16 +13,19 @@ ACharacterBase::ACharacterBase(const FObjectInitializer& ObjectInitializer) : Su
 	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("State.RemoveOnDeath"));
 }
 
+UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const {
+	return AbilitySystemComponent.Get();
+}
 bool ACharacterBase::IsAlive() const {
 	return GetHealth() > 0.0f;
 }
 
 int32 ACharacterBase::GetAbilityLevel(AbilityID AbilityID) const {
-	return 1;
+	return static_cast<int32>(AbilityID);
 }
 
 void ACharacterBase::RemoveCharacterAbilities() {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->CharacterAbilitiesGiven) {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bCharacterAbilitiesGiven) {
 		return;
 	}
 
@@ -37,7 +40,7 @@ void ACharacterBase::RemoveCharacterAbilities() {
 		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
 	}
 
-	AbilitySystemComponent->CharacterAbilitiesGiven = false;
+	AbilitySystemComponent->bCharacterAbilitiesGiven = false;
 }
 
 void ACharacterBase::Die() {
@@ -76,26 +79,23 @@ float ACharacterBase::GetDamageBuff() const {
 void ACharacterBase::BeginPlay() {
 	Super::BeginPlay();
 }
-// Using EnhancedInput instead
-//void ACharacterBase::AddCharacterAbilities() {
-//	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->CharacterAbilitiesGiven) {
-//		return;
-//	}
-//
-//	for (TSubclassOf<UCharacterGameplayAbility>& StartupAbility : CharacterAbilities) {
-//		AbilitySystemComponent->GiveAbility(
-//			FGameplayAbilitySpec(StartupAbility,
-//				GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID),
-//				static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
-//	}
-//
-//	AbilitySystemComponent->CharacterAbilitiesGiven = true;
-//}
-
-void ACharacterBase::InitializeAttributes() {
-	if (!AbilitySystemComponent.IsValid()) {
+void ACharacterBase::AddCharacterAbilities() {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bCharacterAbilitiesGiven) {
 		return;
 	}
+
+	for (TSubclassOf<UCharacterGameplayAbility>& StartupAbility : CharacterAbilities) {
+		AbilitySystemComponent->GiveAbility(
+			FGameplayAbilitySpec(StartupAbility,
+				GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID),
+				static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
+	}
+
+	AbilitySystemComponent->bCharacterAbilitiesGiven = true;
+}
+
+void ACharacterBase::InitializeAttributes() {
+	if (!AbilitySystemComponent.IsValid()) return;
 
 	if (!DefaultAttributes) {
 		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
@@ -112,7 +112,7 @@ void ACharacterBase::InitializeAttributes() {
 }
 
 void ACharacterBase::AddStartupEffects() {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->StartupEffectsApplied) {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bStartupEffectsApplied) {
 		return;
 	}
 
@@ -126,45 +126,35 @@ void ACharacterBase::AddStartupEffects() {
 		}
 	}
 
-	AbilitySystemComponent->StartupEffectsApplied = true;
+	AbilitySystemComponent->bStartupEffectsApplied = true;
 }
 
 void ACharacterBase::SetHealth(float Health) {
-	if (AttributeSetBase.IsValid()) {
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetHealth(Health);
-	}
 }
 
 void ACharacterBase::SetMaxHealth(float MaxHealth) {
-	if (AttributeSetBase.IsValid()) {
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetMaxHealth(MaxHealth);
-	}
 }
 
 void ACharacterBase::SetMana(float Mana) {
-	if (AttributeSetBase.IsValid()) {
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetMana(Mana);
-	}
 }
 
 void ACharacterBase::SetMaxMana(float MaxMana) {
-	if (AttributeSetBase.IsValid()) {
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetMaxMana(MaxMana);
-	}
 }
 
 void ACharacterBase::SetDamage(float Damage) {
-	if (AttributeSetBase.IsValid()) {
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetDamage(Damage);
-	}
 }
 
 void ACharacterBase::SetDamageBuff(float DamageBuff) {
-	if (AttributeSetBase.IsValid()) {
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetDamageBuff(DamageBuff);
-	}
-}
-
-UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const {
-	return AbilitySystemComponent.Get();
 }

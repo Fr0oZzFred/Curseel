@@ -10,8 +10,8 @@ UCLASS()
 class CURSEEL_API UCharacterASC : public UAbilitySystemComponent {
 	GENERATED_BODY()
 public:
-	bool CharacterAbilitiesGiven = false;
-	bool StartupEffectsApplied = false;
+	bool bCharacterAbilitiesGiven = false;
+	bool bStartupEffectsApplied = false;
 
 	FReceivedDamageDelegate ReceivedDamage;
 

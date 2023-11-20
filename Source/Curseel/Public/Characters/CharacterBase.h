@@ -20,9 +20,9 @@ class CURSEEL_API ACharacterBase : public ACharacter, public IAbilitySystemInter
 
 
 public:
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
 	ACharacterBase(const class FObjectInitializer& ObjectInitializer);
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Character")
 	FCharacterDiedDelegate OnCharacterDied;
 
@@ -72,8 +72,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
-	//Using EnhcancedInput instead
-	//virtual void AddCharacterAbilities();
+	virtual void AddCharacterAbilities();
 
 	virtual void InitializeAttributes();
 
