@@ -20,44 +20,8 @@ AWheelCharacter::AWheelCharacter(const FObjectInitializer& ObjectInitializer) : 
 	AttributeSetBase = HardRefAttributeSetBase;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
-
 }
 
 void AWheelCharacter::BeginPlay() {
 	Super::BeginPlay();
-
-	if (AbilitySystemComponent.IsValid()) {
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-		InitializeAttributes();
-		AddStartupEffects();
-		AddCharacterAbilities();
-
-		// Attribute change callbacks
-		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &AWheelCharacter::HealthChanged);
-
-		// Tag change callbacks
-		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AWheelCharacter::StunTagChanged);
-
-		SetHealth(GetMaxHealth());
-	}
-}
-
-void AWheelCharacter::HealthChanged(const FOnAttributeChangeData& Data) {
-	float Health = Data.NewValue;
-
-	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeadTag)) {
-		Die();
-	}
-}
-
-void AWheelCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) {
-	if (NewCount > 0) {
-		FGameplayTagContainer AbilityTagsToCancel;
-		AbilityTagsToCancel.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
-
-		FGameplayTagContainer AbilityTagsToIgnore;
-		AbilityTagsToIgnore.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.NotCanceledByStun")));
-
-		AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel, &AbilityTagsToIgnore);
-	}
 }

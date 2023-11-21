@@ -6,7 +6,6 @@ ACharacterBase::ACharacterBase(const FObjectInitializer& ObjectInitializer) : Su
 	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
-
 	bAlwaysRelevant = true;
 
 	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
@@ -76,6 +75,22 @@ float ACharacterBase::GetMoveSpeed() const {
 
 void ACharacterBase::BeginPlay() {
 	Super::BeginPlay();
+
+	if (AbilitySystemComponent.IsValid()) {
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+		InitializeAttributes();
+		AddStartupEffects();
+		AddCharacterAbilities();
+
+		// Attribute change callbacks
+		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &ACharacterBase::HealthChanged);
+
+		// Tag change callbacks
+		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACharacterBase::StunTagChanged);
+
+		SetHealth(GetMaxHealth());
+		GetCharacterMovement()->MaxWalkSpeed = GetMoveSpeed();
+	}
 }
 void ACharacterBase::AddCharacterAbilities() {
 	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bCharacterAbilitiesGiven) {
@@ -125,6 +140,31 @@ void ACharacterBase::AddStartupEffects() {
 	}
 
 	AbilitySystemComponent->bStartupEffectsApplied = true;
+}
+
+void ACharacterBase::HealthChanged(const FOnAttributeChangeData& Data) {
+	float Health = Data.NewValue;
+
+	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeadTag)) {
+		Die();
+	}
+}
+void ACharacterBase::MoveSpeedChanged(const FOnAttributeChangeData& Data) {
+	float MoveSpeed = Data.NewValue;
+
+	GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
+}
+
+void ACharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) {
+	if (NewCount > 0) {
+		FGameplayTagContainer AbilityTagsToCancel;
+		AbilityTagsToCancel.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
+
+		FGameplayTagContainer AbilityTagsToIgnore;
+		AbilityTagsToIgnore.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.NotCanceledByStun")));
+
+		AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel, &AbilityTagsToIgnore);
+	}
 }
 
 void ACharacterBase::SetHealth(float Health) {

@@ -28,10 +28,4 @@ protected:
 	class UAttributeSetBase* HardRefAttributeSetBase;
 
 	virtual void BeginPlay() override;
-
-	FDelegateHandle HealthChangedDelegateHandle;
-
-	virtual void HealthChanged(const FOnAttributeChangeData& Data);
-
-	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 };

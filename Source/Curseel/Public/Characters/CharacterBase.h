@@ -76,6 +76,15 @@ protected:
 
 	virtual void AddStartupEffects();
 
+	FDelegateHandle HealthChangedDelegateHandle;
+	FDelegateHandle MoveSpeedChangedDelegateHandle;
+
+	virtual void HealthChanged(const FOnAttributeChangeData& Data);
+
+	virtual void MoveSpeedChanged(const FOnAttributeChangeData& Data);
+
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
 	//Should be only used for hardcode/debug
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
