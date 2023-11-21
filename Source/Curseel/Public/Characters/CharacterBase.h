@@ -23,33 +23,31 @@ public:
 	ACharacterBase(const class FObjectInitializer& ObjectInitializer);
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	UPROPERTY(BlueprintAssignable, Category = "GAS|Character")
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Characters")
 	FCharacterDiedDelegate OnCharacterDied;
 
 
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters")
 	virtual bool IsAlive() const;
 
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters")
 	virtual int32 GetAbilityLevel(AbilityID AbilityID) const;
 
 	virtual void RemoveCharacterAbilities();
 
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters")
 	virtual void Die();
 
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
 	float GetHealth() const;
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
 	float GetMaxHealth() const;
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
-	float GetMana() const;
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
-	float GetMaxMana() const;
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
 	float GetDamage() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
 	float GetDamageBuff() const;
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
+	float GetMoveSpeed() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -60,7 +58,7 @@ protected:
 	FGameplayTag DeadTag;
 	FGameplayTag EffectRemoveOnDeathTag;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Character")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Characters")
 	FText CharacterName;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
@@ -80,16 +78,14 @@ protected:
 
 	//Should be only used for hardcode/debug
 
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes|Hardcode")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetHealth(float Health);
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes|Hardcode")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetMaxHealth(float MaxHealth);
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes|Hardcode")
-	virtual void SetMana(float Mana);
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes|Hardcode")
-	virtual void SetMaxMana(float MaxMana);
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes|Hardcode")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetDamage(float Damage);
-	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes|Hardcode")
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetDamageBuff(float DamageBuff);
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
+	virtual void SetMoveSpeed(float MoveSpeed);
 };

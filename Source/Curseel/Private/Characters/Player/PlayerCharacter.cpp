@@ -41,7 +41,6 @@ void APlayerCharacter::InitiliazeStartingValues(ACharacterPlayerState* PS) {
 	AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
 	InitializeAttributes();
 	SetHealth(GetMaxHealth());
-	SetMana(GetMaxMana());
 }
 
 void APlayerCharacter::OnRep_PlayerState() {

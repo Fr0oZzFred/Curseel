@@ -30,14 +30,6 @@ float ACharacterPlayerState::GetMaxHealth() const {
 	return AttributeSetBase->GetMaxHealth();
 }
 
-float ACharacterPlayerState::GetMana() const {
-	return AttributeSetBase->GetMana();
-}
-
-float ACharacterPlayerState::GetMaxMana() const {
-	return AttributeSetBase->GetMaxMana();
-}
-
 void ACharacterPlayerState::BeginPlay() {
 	Super::BeginPlay();
 	if (!AbilitySystemComponent) return;
@@ -47,12 +39,6 @@ void ACharacterPlayerState::BeginPlay() {
 
 	MaxHealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 		AttributeSetBase->GetMaxHealthAttribute()).AddUObject(this, &ACharacterPlayerState::MaxHealthChanged);
-
-	ManaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-		AttributeSetBase->GetManaAttribute()).AddUObject(this, &ACharacterPlayerState::ManaChanged);
-
-	MaxManaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-		AttributeSetBase->GetMaxManaAttribute()).AddUObject(this, &ACharacterPlayerState::MaxManaChanged);
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(
 		FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACharacterPlayerState::StunTagChanged);
@@ -66,12 +52,6 @@ void ACharacterPlayerState::HealthChanged(const FOnAttributeChangeData& Data) {
 }
 void ACharacterPlayerState::MaxHealthChanged(const FOnAttributeChangeData& Data) {
 	UE_LOG(LogTemp, Warning, TEXT("Max Health Changed!"));
-}
-void ACharacterPlayerState::ManaChanged(const FOnAttributeChangeData& Data) {
-	UE_LOG(LogTemp, Warning, TEXT("Mana Changed!"));
-}
-void ACharacterPlayerState::MaxManaChanged(const FOnAttributeChangeData& Data) {
-	UE_LOG(LogTemp, Warning, TEXT("Max Mana Changed!"));
 }
 
 void ACharacterPlayerState::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) {

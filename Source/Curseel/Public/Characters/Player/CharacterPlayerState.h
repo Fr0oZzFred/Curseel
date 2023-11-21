@@ -26,10 +26,6 @@ public:
 	float GetHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|PlayerState|Attributes")
 	float GetMaxHealth() const;
-	UFUNCTION(BlueprintCallable, Category = "GAS|PlayerState|Attributes")
-	float GetMana() const;
-	UFUNCTION(BlueprintCallable, Category = "GAS|PlayerState|Attributes")
-	float GetMaxMana() const;
 
 protected:
 	UPROPERTY()
@@ -41,16 +37,12 @@ protected:
 	FDelegateHandle CharacterLevelChangedDelegateHandle;
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
-	FDelegateHandle ManaChangedDelegateHandle;
-	FDelegateHandle MaxManaChangedDelegateHandle;
 
 	virtual void BeginPlay() override;
 
 	virtual void CharacterLevelChanged(const FOnAttributeChangeData& Data);
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxHealthChanged(const FOnAttributeChangeData& Data);
-	virtual void ManaChanged(const FOnAttributeChangeData& Data);
-	virtual void MaxManaChanged(const FOnAttributeChangeData& Data);
 
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 

@@ -24,38 +24,32 @@ public:
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, Health)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_MaxHealth)
+	UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, MaxHealth)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Mana", ReplicatedUsing = OnRep_Mana)
-	FGameplayAttributeData Mana;
-	ATTRIBUTE_ACCESSORS(UAttributeSetBase, Mana)
-
-		UPROPERTY(BlueprintReadOnly, Category = "Mana", ReplicatedUsing = OnRep_MaxMana)
-	FGameplayAttributeData MaxMana;
-	ATTRIBUTE_ACCESSORS(UAttributeSetBase, MaxMana)
-
-		UPROPERTY(BlueprintReadOnly, Category = "Damage", ReplicatedUsing = OnRep_Damage)
+	UPROPERTY(BlueprintReadOnly, Category = "Damage", ReplicatedUsing = OnRep_Damage)
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, Damage)
 
-		UPROPERTY(BlueprintReadOnly, Category = "DamageBuff", ReplicatedUsing = OnRep_DamageBuff)
+	UPROPERTY(BlueprintReadOnly, Category = "DamageBuff", ReplicatedUsing = OnRep_DamageBuff)
 	FGameplayAttributeData DamageBuff;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, DamageBuff)
 
-		UFUNCTION()
+	UPROPERTY(BlueprintReadOnly, Category = "MoveSpeed", ReplicatedUsing = OnRep_MoveSpeed)
+	FGameplayAttributeData MoveSpeed;
+	ATTRIBUTE_ACCESSORS(UAttributeSetBase, MoveSpeed)
+
+	UFUNCTION()
 	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 	UFUNCTION()
 	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
 	UFUNCTION()
-	virtual void OnRep_Mana(const FGameplayAttributeData& OldMana);
-	UFUNCTION()
-	virtual void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana);
-	UFUNCTION()
 	virtual void OnRep_Damage(const FGameplayAttributeData& OldDamage);
 	UFUNCTION()
 	virtual void OnRep_DamageBuff(const FGameplayAttributeData& OldDamageBuff);
+	UFUNCTION()
+	virtual void OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;

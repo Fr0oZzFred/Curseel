@@ -63,17 +63,15 @@ float ACharacterBase::GetHealth() const {
 float ACharacterBase::GetMaxHealth() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMaxHealth() : 0.0f;
 }
-float ACharacterBase::GetMana() const {
-	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMana() : 0.0f;
-}
-float ACharacterBase::GetMaxMana() const {
-	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMaxMana() : 0.0f;
-}
 float ACharacterBase::GetDamage() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDamage() : 0.0f;
 }
 float ACharacterBase::GetDamageBuff() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDamageBuff() : 0.0f;
+}
+
+float ACharacterBase::GetMoveSpeed() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMoveSpeed() : 0.0f;
 }
 
 void ACharacterBase::BeginPlay() {
@@ -133,28 +131,19 @@ void ACharacterBase::SetHealth(float Health) {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetHealth(Health);
 }
-
 void ACharacterBase::SetMaxHealth(float MaxHealth) {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetMaxHealth(MaxHealth);
 }
-
-void ACharacterBase::SetMana(float Mana) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetMana(Mana);
-}
-
-void ACharacterBase::SetMaxMana(float MaxMana) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetMaxMana(MaxMana);
-}
-
 void ACharacterBase::SetDamage(float Damage) {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetDamage(Damage);
 }
-
 void ACharacterBase::SetDamageBuff(float DamageBuff) {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetDamageBuff(DamageBuff);
+}
+void ACharacterBase::SetMoveSpeed(float MoveSpeed) {
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetDamageBuff(MoveSpeed);
 }
