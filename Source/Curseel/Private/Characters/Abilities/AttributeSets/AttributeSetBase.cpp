@@ -28,6 +28,7 @@ void UAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 void UAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) {
 	Super::PostGameplayEffectExecute(Data);
+	if (!Data.Target.IsValidLowLevel()) return;
 
 	//Clamp Attributes
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
