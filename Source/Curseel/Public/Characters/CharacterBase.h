@@ -25,8 +25,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Characters")
 	FCharacterDiedDelegate OnCharacterDied;
-
-
+e
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters")
 	virtual bool IsAlive() const;
 
