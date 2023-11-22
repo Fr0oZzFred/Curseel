@@ -6,7 +6,6 @@
 #include "Characters/Abilities/CharacterASC.h"
 #include "Characters/Abilities/AttributeSets/AttributeSetBase.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "MonsterCharacter.generated.h"
 
