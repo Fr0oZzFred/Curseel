@@ -13,6 +13,7 @@
 #include "CharacterBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, ACharacterBase*, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterStunnedDelegate, ACharacterBase*, Character, bool, Stunned);
 
 UCLASS()
 class CURSEEL_API ACharacterBase : public ACharacter, public IAbilitySystemInterface {
@@ -25,6 +26,8 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Characters")
 	FCharacterDiedDelegate OnCharacterDied;
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Characters")
+	FCharacterStunnedDelegate OnCharacterStunned;
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters")
 	virtual bool IsAlive() const;
@@ -45,6 +48,8 @@ public:
 	float GetDamage() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
 	float GetDamageBuff() const;
+	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
+	float GetDamageReduction() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
 	float GetMoveSpeed() const;
 
@@ -94,6 +99,8 @@ protected:
 	virtual void SetDamage(float Damage);
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetDamageBuff(float DamageBuff);
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
+	virtual void SetDamageReduction(float DamageReduction);
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetMoveSpeed(float MoveSpeed);
 };

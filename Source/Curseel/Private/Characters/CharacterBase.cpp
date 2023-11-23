@@ -68,7 +68,9 @@ float ACharacterBase::GetDamage() const {
 float ACharacterBase::GetDamageBuff() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDamageBuff() : 0.0f;
 }
-
+float ACharacterBase::GetDamageReduction() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDamageReduction() : 0.0f;
+}
 float ACharacterBase::GetMoveSpeed() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMoveSpeed() : 0.0f;
 }
@@ -84,6 +86,7 @@ void ACharacterBase::BeginPlay() {
 
 		// Attribute change callbacks
 		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &ACharacterBase::HealthChanged);
+		MoveSpeedChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetMoveSpeedAttribute()).AddUObject(this, &ACharacterBase::MoveSpeedChanged);
 
 		// Tag change callbacks
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACharacterBase::StunTagChanged);
@@ -156,6 +159,9 @@ void ACharacterBase::MoveSpeedChanged(const FOnAttributeChangeData& Data) {
 }
 
 void ACharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) {
+
+	OnCharacterStunned.Broadcast(this, NewCount > 0);
+
 	if (NewCount > 0) {
 		FGameplayTagContainer AbilityTagsToCancel;
 		AbilityTagsToCancel.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
@@ -182,6 +188,10 @@ void ACharacterBase::SetDamage(float Damage) {
 void ACharacterBase::SetDamageBuff(float DamageBuff) {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetDamageBuff(DamageBuff);
+}
+void ACharacterBase::SetDamageReduction(float DamageReduction) {
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetDamageReduction(DamageReduction);
 }
 void ACharacterBase::SetMoveSpeed(float MoveSpeed) {
 	if (AttributeSetBase.IsValid())

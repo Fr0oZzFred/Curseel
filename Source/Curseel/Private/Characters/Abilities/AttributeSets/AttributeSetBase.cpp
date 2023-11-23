@@ -12,7 +12,9 @@ void UAttributeSetBase::OnRep_Damage(const FGameplayAttributeData& OldDamage) {
 void UAttributeSetBase::OnRep_DamageBuff(const FGameplayAttributeData& OldDamageBuff) {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetBase, DamageBuff, OldDamageBuff);
 }
-
+void UAttributeSetBase::OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction) {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetBase, DamageReduction, OldDamageReduction);
+}
 void UAttributeSetBase::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed) {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetBase, MoveSpeed, OldMoveSpeed);
 }
@@ -23,6 +25,7 @@ void UAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetBase, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetBase, Damage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetBase, DamageBuff, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetBase, DamageReduction, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetBase, MoveSpeed, COND_None, REPNOTIFY_Always);
 }
 
@@ -39,6 +42,9 @@ void UAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetDamageBuffAttribute()) {
 		SetDamageBuff(FMath::Abs(GetDamageBuff()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetDamageReductionAttribute()) {
+		SetDamageReduction(FMath::Abs(GetDamageReduction()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetMoveSpeedAttribute()) {
 		SetMoveSpeed(FMath::Abs(GetMoveSpeed()));

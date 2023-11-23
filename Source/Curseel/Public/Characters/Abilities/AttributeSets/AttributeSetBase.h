@@ -36,6 +36,10 @@ public:
 	FGameplayAttributeData DamageBuff;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, DamageBuff)
 
+	UPROPERTY(BlueprintReadOnly, Category = "DamageReduction", ReplicatedUsing = OnRep_DamageReduction)
+	FGameplayAttributeData DamageReduction;
+	ATTRIBUTE_ACCESSORS(UAttributeSetBase, DamageReduction)
+
 	UPROPERTY(BlueprintReadOnly, Category = "MoveSpeed", ReplicatedUsing = OnRep_MoveSpeed)
 	FGameplayAttributeData MoveSpeed;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, MoveSpeed)
@@ -48,6 +52,8 @@ public:
 	virtual void OnRep_Damage(const FGameplayAttributeData& OldDamage);
 	UFUNCTION()
 	virtual void OnRep_DamageBuff(const FGameplayAttributeData& OldDamageBuff);
+	UFUNCTION()
+	virtual void OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction);
 	UFUNCTION()
 	virtual void OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed);
 

@@ -3,11 +3,13 @@
 struct FDamageStatics {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageBuff);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageReduction);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
 
 	FDamageStatics() {
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Damage, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, DamageBuff, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, DamageReduction, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Health, Source, false);
 	}
 };
@@ -20,6 +22,7 @@ static const FDamageStatics& DamageStatics() {
 UGEC_Damage::UGEC_Damage() {
 	RelevantAttributesToCapture.Add(DamageStatics().DamageDef);
 	RelevantAttributesToCapture.Add(DamageStatics().DamageBuffDef);
+	RelevantAttributesToCapture.Add(DamageStatics().DamageReductionDef);
 	RelevantAttributesToCapture.Add(DamageStatics().HealthDef);
 }
 
@@ -54,9 +57,12 @@ void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPar
 	float DamageBuff = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageBuffDef, EvaluationParameters, DamageBuff);
 
+	float DamageReduction = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageReductionDef, EvaluationParameters, DamageReduction);
+
 	float BaseDamage = Damage;
 
-	float ModifiedDamage = BaseDamage * DamageBuff;
+	float ModifiedDamage = BaseDamage * DamageBuff * DamageReduction;
 
 	if (ModifiedDamage < 0.0f) ModifiedDamage = 0.0f;
 
