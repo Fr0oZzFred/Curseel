@@ -44,5 +44,5 @@ void UAsyncTaskAttributeChanged::EndTask() {
 }
 
 void UAsyncTaskAttributeChanged::AttributeChanged(const FOnAttributeChangeData& Data) {
-	OnAttributeChanged.Broadcast(Data.Attribute, Data.NewValue, Data.OldValue);
+	OnAttributeChanged.Broadcast(ASC, Data.Attribute, Data.NewValue, Data.OldValue);
 }

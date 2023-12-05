@@ -5,7 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "AsyncTaskAttributeChanged.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAttributeChanged, FGameplayAttribute, Attribute, float, NewValue, float, OldValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnAttributeChanged, UAbilitySystemComponent*, Owner, FGameplayAttribute, Attribute, float, NewValue, float, OldValue);
 
 UCLASS(BlueprintType, meta = (ExposedAsyncProxy = AsyncTask))
 class CURSEEL_API UAsyncTaskAttributeChanged : public UBlueprintAsyncActionBase {
