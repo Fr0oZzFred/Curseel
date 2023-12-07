@@ -14,6 +14,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, ACharacterBase*, Character);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterStunnedDelegate, ACharacterBase*, Character, bool, Stunned);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FCharacterHealthChangedDelegate, ACharacterBase*, Character, float, NewHealth, float, OldHealth);
 
 UCLASS()
 class CURSEEL_API ACharacterBase : public ACharacter, public IAbilitySystemInterface {
@@ -28,6 +29,8 @@ public:
 	FCharacterDiedDelegate OnCharacterDied;
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Characters")
 	FCharacterStunnedDelegate OnCharacterStunned;
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Characters")
+	FCharacterHealthChangedDelegate OnCharacterHealthChanged;
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters")
 	virtual bool IsAlive() const;
