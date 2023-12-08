@@ -34,11 +34,9 @@ void UAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (!Data.Target.IsValidLowLevel()) return;
 
 	//Clamp Attributes
-	// 
-	// Removed for new wheel mechanic
-	//if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
-	//	SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
-	//}
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+	}
 	else if (Data.EvaluatedData.Attribute == GetDamageAttribute()) {
 		SetDamage(FMath::Abs(GetDamage()));
 	}
