@@ -39,6 +39,9 @@ void UAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	//if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
 	//	SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 	//}
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
+		if (GetHealth() > GetMaxHealth()) SetHealth(GetMaxHealth());
+	}
 	else if (Data.EvaluatedData.Attribute == GetDamageAttribute()) {
 		SetDamage(FMath::Abs(GetDamage()));
 	}
