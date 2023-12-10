@@ -48,6 +48,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
 	float GetMaxHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
+	float GetShield() const;
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
 	float GetDamage() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|Character|Attributes")
 	float GetDamageBuff() const;
@@ -98,6 +100,8 @@ protected:
 	virtual void SetHealth(float Health);
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetMaxHealth(float MaxHealth);
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
+	virtual void SetShield(float Shield);
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetDamage(float Damage);
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")

@@ -62,6 +62,9 @@ float ACharacterBase::GetHealth() const {
 float ACharacterBase::GetMaxHealth() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMaxHealth() : 0.0f;
 }
+float ACharacterBase::GetShield() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetShield() : 0.0f;
+}
 float ACharacterBase::GetDamage() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDamage() : 0.0f;
 }
@@ -181,6 +184,10 @@ void ACharacterBase::SetHealth(float Health) {
 void ACharacterBase::SetMaxHealth(float MaxHealth) {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetMaxHealth(MaxHealth);
+}
+void ACharacterBase::SetShield(float Shield) {
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetShield(Shield);
 }
 void ACharacterBase::SetDamage(float Damage) {
 	if (AttributeSetBase.IsValid())
