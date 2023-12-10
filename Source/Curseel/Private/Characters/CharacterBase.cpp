@@ -157,7 +157,7 @@ void ACharacterBase::HealthChanged(const FOnAttributeChangeData& Data) {
 }
 void ACharacterBase::MoveSpeedChanged(const FOnAttributeChangeData& Data) {
 	float MoveSpeed = Data.NewValue;
-	OnCharacterMoveSpeedChanged.Broadcast(this, Data.NewValue);
+	//OnCharacterMoveSpeedChanged.Broadcast(this, Data.NewValue);
 	GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
 }
 

@@ -52,6 +52,8 @@ public:
 	float GetDamageReduction() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
 	float GetMoveSpeed() const;
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
+	float GetAttackSpeed() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -103,4 +105,6 @@ protected:
 	virtual void SetDamageReduction(float DamageReduction);
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetMoveSpeed(float MoveSpeed);
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
+	virtual void SetAttackSpeed(float AttackSpeed);
 };

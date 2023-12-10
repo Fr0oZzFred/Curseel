@@ -27,6 +27,4 @@ protected:
 	class UAttributeSetBase* HardRefAttributeSetBase;
 
 	virtual void BeginPlay() override;
-	
-	virtual void HealthChanged(const FOnAttributeChangeData& Data) override;
 };
