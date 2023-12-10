@@ -147,8 +147,6 @@ void ACharacterBase::AddStartupEffects() {
 
 void ACharacterBase::HealthChanged(const FOnAttributeChangeData& Data) {
 
-	OnCharacterHealthChanged.Broadcast(this, Data.NewValue, Data.OldValue);
-
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeadTag)) {
 		Die();
 	}
