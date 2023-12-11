@@ -25,3 +25,6 @@ AWheelCharacter::AWheelCharacter(const FObjectInitializer& ObjectInitializer) : 
 void AWheelCharacter::BeginPlay() {
 	Super::BeginPlay();
 }
+void AWheelCharacter::HealthChanged(const FOnAttributeChangeData& Data) {
+	OnCharacterHealthChanged.Broadcast(this, Data.NewValue, Data.OldValue);
+}
