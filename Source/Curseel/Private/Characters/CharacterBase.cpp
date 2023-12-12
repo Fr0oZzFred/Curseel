@@ -78,6 +78,10 @@ float ACharacterBase::GetMoveSpeed() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMoveSpeed() : 0.0f;
 }
 
+float ACharacterBase::GetAttackSpeed() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetAttackSpeed() : 0.0f;
+}
+
 void ACharacterBase::BeginPlay() {
 	Super::BeginPlay();
 
@@ -157,6 +161,7 @@ void ACharacterBase::HealthChanged(const FOnAttributeChangeData& Data) {
 	}
 }
 void ACharacterBase::MoveSpeedChanged(const FOnAttributeChangeData& Data) {
+	OnCharacterMoveSpeedChanged.Broadcast(this);
 	float MoveSpeed = Data.NewValue;
 
 	GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
@@ -204,4 +209,9 @@ void ACharacterBase::SetDamageReduction(float DamageReduction) {
 void ACharacterBase::SetMoveSpeed(float MoveSpeed) {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetDamageBuff(MoveSpeed);
+}
+
+void ACharacterBase::SetAttackSpeed(float AttackSpeed) {
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetAttackSpeed(AttackSpeed);
 }

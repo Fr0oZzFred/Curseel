@@ -15,6 +15,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, ACharacterBase*, Character);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterStunnedDelegate, ACharacterBase*, Character, bool, Stunned);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FCharacterHealthChangedDelegate, ACharacterBase*, Character, float, NewHealth, float, OldHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterMoveSpeedChangedDelegate, ACharacterBase*, Character);
 
 UCLASS()
 class CURSEEL_API ACharacterBase : public ACharacter, public IAbilitySystemInterface {
@@ -31,6 +32,8 @@ public:
 	FCharacterStunnedDelegate OnCharacterStunned;
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Characters")
 	FCharacterHealthChangedDelegate OnCharacterHealthChanged;
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Characters")
+	FCharacterMoveSpeedChangedDelegate OnCharacterMoveSpeedChanged;
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters")
 	virtual bool IsAlive() const;
@@ -57,6 +60,8 @@ public:
 	float GetDamageReduction() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
 	float GetMoveSpeed() const;
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes")
+	float GetAttackSpeed() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -110,4 +115,6 @@ protected:
 	virtual void SetDamageReduction(float DamageReduction);
 	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
 	virtual void SetMoveSpeed(float MoveSpeed);
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters|Attributes|Hardcode")
+	virtual void SetAttackSpeed(float AttackSpeed);
 };
