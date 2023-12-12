@@ -31,18 +31,22 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Shield", ReplicatedUsing = OnRep_Shield)
 	FGameplayAttributeData Shield;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, Shield)
+		
+	UPROPERTY(BlueprintReadOnly, Category = "Shield", ReplicatedUsing = OnRep_MaxShield)
+	FGameplayAttributeData MaxShield;
+	ATTRIBUTE_ACCESSORS(UAttributeSetBase, MaxShield)
 
 	UPROPERTY(BlueprintReadOnly, Category = "Damage", ReplicatedUsing = OnRep_Damage)
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, Damage)
 
-	UPROPERTY(BlueprintReadOnly, Category = "DamageBuff", ReplicatedUsing = OnRep_DamageBuff)
-	FGameplayAttributeData DamageBuff;
-	ATTRIBUTE_ACCESSORS(UAttributeSetBase, DamageBuff)
+	UPROPERTY(BlueprintReadOnly, Category = "DamageAugmentation", ReplicatedUsing = OnRep_DamageAugmentation)
+	FGameplayAttributeData DamageAugmentation;
+	ATTRIBUTE_ACCESSORS(UAttributeSetBase, DamageAugmentation)
 
-	UPROPERTY(BlueprintReadOnly, Category = "DamageReduction", ReplicatedUsing = OnRep_DamageReduction)
-	FGameplayAttributeData DamageReduction;
-	ATTRIBUTE_ACCESSORS(UAttributeSetBase, DamageReduction)
+	UPROPERTY(BlueprintReadOnly, Category = "Defense", ReplicatedUsing = OnRep_Defense)
+	FGameplayAttributeData Defense;
+	ATTRIBUTE_ACCESSORS(UAttributeSetBase, Defense)
 
 	UPROPERTY(BlueprintReadOnly, Category = "MoveSpeed", ReplicatedUsing = OnRep_MoveSpeed)
 	FGameplayAttributeData MoveSpeed;
