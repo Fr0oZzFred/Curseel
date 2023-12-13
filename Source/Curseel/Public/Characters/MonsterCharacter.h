@@ -19,11 +19,11 @@ public:
 protected:
 
 	// Actual hard pointer to AbilitySystemComponent
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Monsters")
 	class UCharacterASC* HardRefAbilitySystemComponent;
 
 	// Actual hard pointer to AttributeSetBase
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Monsters")
 	class UAttributeSetBase* HardRefAttributeSetBase;
 
 	virtual void BeginPlay() override;

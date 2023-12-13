@@ -19,13 +19,12 @@ public:
 protected:
 
 	// Actual hard pointer to AbilitySystemComponent
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|WheelCharacters")
 	class UCharacterASC* HardRefAbilitySystemComponent;
 
 	// Actual hard pointer to AttributeSetBase
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|WheelCharacters")
 	class UAttributeSetBase* HardRefAttributeSetBase;
 
 	virtual void BeginPlay() override;
-	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 };

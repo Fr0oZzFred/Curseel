@@ -1,15 +1,15 @@
 #include "Characters/Abilities/GEC_Damage.h"
 
 struct FDamageStatics {
-	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageBuff);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageReduction);
+	//DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
+	//DECLARE_ATTRIBUTE_CAPTUREDEF(DamageBuff);
+	//DECLARE_ATTRIBUTE_CAPTUREDEF(DamageReduction);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
 
 	FDamageStatics() {
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Damage, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, DamageBuff, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, DamageReduction, Source, false);
+		//DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Damage, Source, false);
+		//DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, DamageBuff, Source, false);
+		//DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, DamageReduction, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Health, Source, false);
 	}
 };
@@ -20,9 +20,9 @@ static const FDamageStatics& DamageStatics() {
 }
 
 UGEC_Damage::UGEC_Damage() {
-	RelevantAttributesToCapture.Add(DamageStatics().DamageDef);
-	RelevantAttributesToCapture.Add(DamageStatics().DamageBuffDef);
-	RelevantAttributesToCapture.Add(DamageStatics().DamageReductionDef);
+	//RelevantAttributesToCapture.Add(DamageStatics().DamageDef);
+	//RelevantAttributesToCapture.Add(DamageStatics().DamageBuffDef);
+	//RelevantAttributesToCapture.Add(DamageStatics().DamageReductionDef);
 	RelevantAttributesToCapture.Add(DamageStatics().HealthDef);
 }
 
@@ -47,18 +47,17 @@ void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPar
 
 
 	float Damage = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageDef, EvaluationParameters, Damage);
-	// Capture optional damage value set on the damage GE as a CalculationModifier under the ExecutionCalculation
-	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamagePowerDef, EvaluationParameters, Damage);
-	// Add SetByCaller damage if it exists
+	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageDef, EvaluationParameters, Damage);
+	
+	
 	Damage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
 
 
 	float DamageBuff = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageBuffDef, EvaluationParameters, DamageBuff);
+	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageBuffDef, EvaluationParameters, DamageBuff);
 
 	float DamageReduction = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageReductionDef, EvaluationParameters, DamageReduction);
+	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageReductionDef, EvaluationParameters, DamageReduction);
 
 	float BaseDamage = Damage;
 

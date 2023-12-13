@@ -7,6 +7,18 @@ APawnBase::APawnBase(const FObjectInitializer& ObjectInitializer) {
 
 	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
 	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("State.RemoveOnDeath"));
+
+
+	HardRefAbilitySystemComponent = CreateDefaultSubobject<UCharacterASC>(TEXT("AbilitySystemComponent"));
+	HardRefAbilitySystemComponent->SetIsReplicated(true);
+
+	HardRefAbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	AbilitySystemComponent = HardRefAbilitySystemComponent;
+
+	HardRefAttributeSetBase = CreateDefaultSubobject<UAttributeSetBase>(TEXT("AttributeSetBase"));
+
+	AttributeSetBase = HardRefAttributeSetBase;
 }
 UAbilitySystemComponent* APawnBase::GetAbilitySystemComponent() const {
 	return AbilitySystemComponent.Get();
@@ -17,7 +29,7 @@ bool APawnBase::IsAlive() const {
 void APawnBase::Die() {
 	RemoveAbilities();
 
-	OnCharacterDied.Broadcast(this);
+	OnPawnDied.Broadcast(this);
 
 	if (!AbilitySystemComponent.IsValid()) return;
 
@@ -129,20 +141,20 @@ int32 APawnBase::GetAbilityLevel(AbilityID AbilityID) const {
 #pragma region Delegates
 void APawnBase::HealthChanged(const FOnAttributeChangeData& Data) {
 
-	OnCharacterHealthChanged.Broadcast(this, Data.NewValue, Data.OldValue);
+	OnPawnHealthChanged.Broadcast(this, Data.NewValue, Data.OldValue);
 
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeadTag))
 		Die();
 }
 
 void APawnBase::MoveSpeedChanged(const FOnAttributeChangeData& Data) {
-	OnCharacterMoveSpeedChanged.Broadcast(this);
+	OnPawnMoveSpeedChanged.Broadcast(this);
 }
 
 void APawnBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) {
 	bool bIsStunned = NewCount > 0;
 
-	OnCharacterStunned.Broadcast(this, bIsStunned);
+	OnPawnStunned.Broadcast(this, bIsStunned);
 
 
 	if (!bIsStunned) return;
@@ -164,59 +176,101 @@ float APawnBase::GetHealth() const {
 float APawnBase::GetMaxHealth() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMaxHealth() : 0.0f;
 }
+
 float APawnBase::GetShield() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetShield() : 0.0f;
 }
-float APawnBase::GetDamage() const {
-	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDamage() : 0.0f;
+float APawnBase::GetMaxShield() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMaxShield() : 0.0f;
 }
-float APawnBase::GetDamageBuff() const {
-	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDamageBuff() : 0.0f;
+
+float APawnBase::GetAttack() {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetAttack() : 0.0f;
 }
-float APawnBase::GetDamageReduction() const {
-	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDamageReduction() : 0.0f;
+float APawnBase::GetAttackSpeed() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetAttackSpeed() : 0.0f;
 }
+float APawnBase::GetAttackPotency() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetAttackPotency() : 0.0f;
+}
+
+float APawnBase::GetHealthSteal() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetHealthSteal() : 0.0f;
+}
+float APawnBase::GetHealthStealPotency() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetHealthStealPotency() : 0.0f;
+}
+float APawnBase::GetShieldSteal() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetShieldSteal() : 0.0f;
+}
+float APawnBase::GetShieldStealPotency() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetShieldStealPotency() : 0.0f;
+}
+
+float APawnBase::GetAttackResistance() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetAttackResistance() : 0.0f;
+}
+float APawnBase::GetStealResistance() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetStealResistance() : 0.0f;
+}
+
 float APawnBase::GetMoveSpeed() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetMoveSpeed() : 0.0f;
 }
-
-float APawnBase::GetAttackSpeed() const {
-	return AttributeSetBase.IsValid() ? AttributeSetBase->GetAttackSpeed() : 0.0f;
+float APawnBase::GetDashPower() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDashPower() : 0.0f;
 }
 #pragma endregion
 
 #pragma region Hardcode
-void APawnBase::SetHealth(float Health) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetHealth(Health);
+void APawnBase::SetHealth(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetHealth(NewValue);
 }
-void APawnBase::SetMaxHealth(float MaxHealth) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetMaxHealth(MaxHealth);
-}
-void APawnBase::SetShield(float Shield) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetShield(Shield);
-}
-void APawnBase::SetDamage(float Damage) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetDamage(Damage);
-}
-void APawnBase::SetDamageBuff(float DamageBuff) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetDamageBuff(DamageBuff);
-}
-void APawnBase::SetDamageReduction(float DamageReduction) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetDamageReduction(DamageReduction);
-}
-void APawnBase::SetMoveSpeed(float MoveSpeed) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetDamageBuff(MoveSpeed);
+void APawnBase::SetMaxHealth(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetMaxHealth(NewValue);
 }
 
-void APawnBase::SetAttackSpeed(float AttackSpeed) {
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetAttackSpeed(AttackSpeed);
+void APawnBase::SetShield(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetShield(NewValue);
+}
+void APawnBase::SetMaxShield(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetMaxShield(NewValue);
+}
+
+void APawnBase::SetAttack(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetAttack(NewValue);
+}
+void APawnBase::SetAttackSpeed(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetAttackSpeed(NewValue);
+}
+void APawnBase::SetAttackPotency(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetAttackPotency(NewValue);
+}
+
+void APawnBase::SetHealthSteal(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetHealthSteal(NewValue);
+}
+void APawnBase::SetHealthStealPotency(float NewValue) {
+if (AttributeSetBase.IsValid()) AttributeSetBase->SetHealthStealPotency(NewValue);
+}
+void APawnBase::SetShieldSteal(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetShieldSteal(NewValue);
+}
+void APawnBase::SetShieldStealPotency(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetShieldStealPotency(NewValue);
+}
+
+void APawnBase::SetAttackResistance(float NewValue) {
+if (AttributeSetBase.IsValid()) AttributeSetBase->SetAttackResistance(NewValue);
+}
+void APawnBase::SetStealResistance(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetStealResistance(NewValue);
+}
+
+void APawnBase::SetMoveSpeed(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetMoveSpeed(NewValue);
+}
+void APawnBase::SetDashPower(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetDashPower(NewValue);
 }
 #pragma endregion
