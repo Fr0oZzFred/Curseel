@@ -65,6 +65,7 @@ void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPar
 
 	if (ModifiedDamage < 0.0f) ModifiedDamage = 0.0f;
 
+	ModifiedDamage = 100.0f;
 	// Set the Target's damage meta attribute
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -ModifiedDamage));
 }
