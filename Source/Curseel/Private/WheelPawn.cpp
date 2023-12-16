@@ -1,7 +1,9 @@
 #include "WheelPawn.h"
 #include <Kismet/KismetMathLibrary.h>
+#include <Kismet/GameplayStatics.h>
 
 AWheelPawn::AWheelPawn(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
+	//Capsule
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	CapsuleComponent->InitCapsuleSize(140.0f, 280.0f);
 	CapsuleComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
@@ -13,13 +15,38 @@ AWheelPawn::AWheelPawn(const FObjectInitializer& ObjectInitializer) : Super(Obje
 	CapsuleComponent->bDynamicObstacle = true;
 	RootComponent = CapsuleComponent;
 
+	//Cam
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
+	SpringArmComp->SetupAttachment(CapsuleComponent);
 
-	FloatingMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloatingMovement"));
-	if (FloatingMovement) {
-		FloatingMovement->UpdatedComponent = CapsuleComponent;
+	SpringArmComp->TargetArmLength = 800.0f;
+	SpringArmComp->SocketOffset = FVector(0.0f, 0.0f, 1000.0f);
+	SpringArmComp->TargetOffset = FVector(100.0f, 0.0f, 0.0f);
+
+	SpringArmComp->bDoCollisionTest = false;
+	SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->bEnableCameraLag = true;
+
+	CamComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CamComp"));
+	CamComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
+	CamComp->SetRelativeRotation(FRotator(0.0f, -55.0f, 0.0f));
+
+	//Roots
+	WheelCenter = CreateDefaultSubobject<USceneComponent>(TEXT("WheelCenter"));
+	WheelCenter->SetupAttachment(CapsuleComponent);
+
+	LeftCharacterRoot = CreateOptionalDefaultSubobject<USceneComponent>(TEXT("LeftCharacterRoot"));
+	FrontCharacterRoot = CreateOptionalDefaultSubobject<USceneComponent>(TEXT("FrontCharacterRoot"));
+	RightCharacterRoot = CreateOptionalDefaultSubobject<USceneComponent>(TEXT("RightCharacterRoot"));
+	CharactersRoot.Add(LeftCharacterRoot);
+	CharactersRoot.Add(FrontCharacterRoot);
+	CharactersRoot.Add(RightCharacterRoot);
+
+	for (auto& r : CharactersRoot) {
+		r->SetupAttachment(WheelCenter);
 	}
 
-
+	//Characters
 	LeftCharacterMesh = CreateOptionalDefaultSubobject<USkeletalMeshComponent>(TEXT("LeftCharacterMesh"));
 	if (LeftCharacterMesh) {
 		LeftCharacterMesh->AlwaysLoadOnClient = true;
@@ -71,28 +98,16 @@ AWheelPawn::AWheelPawn(const FObjectInitializer& ObjectInitializer) : Super(Obje
 		Characters.Add(RightCharacterMesh);
 	}
 
-
-	WheelCenter = CreateDefaultSubobject<USceneComponent>(TEXT("WheelCenter"));
-	WheelCenter->SetupAttachment(CapsuleComponent);
+	int i = 0;
 	for (auto& c : Characters) {
-		c->SetupAttachment(WheelCenter);
+		c->SetupAttachment(CharactersRoot[i++]);
+		c->AddRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	}
 
-
-	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
-	SpringArmComp->SetupAttachment(CapsuleComponent);
-
-	SpringArmComp->TargetArmLength = 800.0f;
-	SpringArmComp->SocketOffset = FVector(0.0f, 0.0f, 1000.0f);
-	SpringArmComp->TargetOffset = FVector(100.0f, 0.0f, 0.0f);
-
-	SpringArmComp->bDoCollisionTest = false;
-	SpringArmComp->bUsePawnControlRotation = true;
-	SpringArmComp->bEnableCameraLag = true;
-
-	CamComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CamComp"));
-	CamComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
-	CamComp->SetRelativeRotation(FRotator(0.0f, -55.0f, 0.0f));
+	FloatingMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloatingMovement"));
+	if (FloatingMovement) {
+		FloatingMovement->UpdatedComponent = CapsuleComponent;
+	}
 }
 
 bool AWheelPawn::IsUsingGamepad() const {
@@ -102,6 +117,14 @@ bool AWheelPawn::IsUsingGamepad() const {
 		return CommonInputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad;
 	}
 	return false;
+}
+
+void AWheelPawn::BeginPlay() {
+	Abilities.Add(AttackAbility);
+	Abilities.Add(TurnLeftAbility);
+	Abilities.Add(TurnRightAbility);
+	Abilities.Add(DashAbility);
+	Super::BeginPlay();
 }
 
 void AWheelPawn::OnConstruction(const FTransform& Transform) {
@@ -131,7 +154,7 @@ void AWheelPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 }
 
 void AWheelPawn::TurnWheel(bool bCW) {
-	CurrentCharacterIndex += bCW ? 1 : -1;
+	CurrentCharacterIndex += bCW ? -1 : -2;
 	CurrentCharacterIndex += 3;
 	CurrentCharacterIndex %= 3;
 
@@ -139,31 +162,35 @@ void AWheelPawn::TurnWheel(bool bCW) {
 }
 
 void AWheelPawn::UpdateWheelFormation() {
-	TObjectPtr<USkeletalMeshComponent> UpdatedCharacters[] =
-	{ LeftCharacterMesh, FrontCharacterMesh, RightCharacterMesh };
+	//0 will be left
+	//1 will be front
+	//2 will be right
+	TObjectPtr<USceneComponent> UpdatedCharacters[] =
+	{ LeftCharacterRoot, FrontCharacterRoot, RightCharacterRoot };
 
+	//CurrentIndex will become Front Char
 	switch (CurrentCharacterIndex) {
 		case 0:
-			UpdatedCharacters[0] = RightCharacterMesh;
-			UpdatedCharacters[1] = LeftCharacterMesh;
-			UpdatedCharacters[2] = FrontCharacterMesh;
+			UpdatedCharacters[0] = RightCharacterRoot;
+			UpdatedCharacters[1] = LeftCharacterRoot;
+			UpdatedCharacters[2] = FrontCharacterRoot;
 		break;
 		case 1:
-			UpdatedCharacters[0] = LeftCharacterMesh;
-			UpdatedCharacters[1] = FrontCharacterMesh;
-			UpdatedCharacters[2] = RightCharacterMesh;
+			UpdatedCharacters[0] = LeftCharacterRoot;
+			UpdatedCharacters[1] = FrontCharacterRoot;
+			UpdatedCharacters[2] = RightCharacterRoot;
 		break;
 		case 2:
-			UpdatedCharacters[0] = FrontCharacterMesh;
-			UpdatedCharacters[1] = RightCharacterMesh;
-			UpdatedCharacters[2] = LeftCharacterMesh;
+			UpdatedCharacters[0] = FrontCharacterRoot;
+			UpdatedCharacters[1] = RightCharacterRoot;
+			UpdatedCharacters[2] = LeftCharacterRoot;
 		break;
 		default:
 		break;
 	}
 
 	//Front Char
-	SetCharPos(UpdatedCharacters[1], FVector(Radius, 0.0f, 0.0f));
+	SetRootPos(UpdatedCharacters[1], FVector(Radius, 0.0f, 0.0f));
 
 	//Sides Char
 	FVector NewPos = FVector(
@@ -171,21 +198,19 @@ void AWheelPawn::UpdateWheelFormation() {
 		UKismetMathLibrary::DegSin(Angle) * Radius,
 		0.0f);
 
-	//Left Char
-	SetCharPos(UpdatedCharacters[0], NewPos);
-
 	//Right Char
+	SetRootPos(UpdatedCharacters[2], NewPos);
+
+	//Left Char
 	NewPos.Y = -NewPos.Y;
-	SetCharPos(UpdatedCharacters[2], NewPos);
+	SetRootPos(UpdatedCharacters[0], NewPos);
 }
 
-void AWheelPawn::SetCharPos(TObjectPtr<USkeletalMeshComponent> Char, FVector Pos) {
+void AWheelPawn::SetRootPos(TObjectPtr<USceneComponent> Root, FVector Pos) {
 	FRotator NewRot = UKismetMathLibrary::FindRelativeLookAtRotation(
 		FTransform::Identity, Pos);
 
-	//Mesh Rotation Offset
-	NewRot.Add(0.0f, -90.0f, 0.0f);
-	Char->SetRelativeLocationAndRotation(Pos, NewRot);
+	Root->SetRelativeLocationAndRotation(Pos, NewRot);
 }
 #pragma region Inputs
 void AWheelPawn::Move(const FInputActionValue& Value) {
@@ -215,24 +240,27 @@ void AWheelPawn::Orient(const FInputActionValue& Value) {
 }
 
 void AWheelPawn::Attack(const FInputActionValue& Value) {
-	//Ability Turn Wheel
+	AbilitySystemComponent->TryActivateAbilityByClass(AttackAbility);
 }
 
 void AWheelPawn::Dash(const FInputActionValue& Value) {
-	//Ability Dash
+	AbilitySystemComponent->TryActivateAbilityByClass(DashAbility);
 }
 
 void AWheelPawn::Interact(const FInputActionValue& Value) {
-	//DelegateInteract
+	OnInteract.Broadcast();
 }
 
 void AWheelPawn::Turn(const FInputActionValue& Value) {
-	//AbilityTurn
+	if (Value.Get<float>() > 0.0f)
+		AbilitySystemComponent->TryActivateAbilityByClass(TurnRightAbility);
+	else
+		AbilitySystemComponent->TryActivateAbilityByClass(TurnLeftAbility);
 }
 
 
 //System
 void AWheelPawn::Pause(const FInputActionValue& Value) {
-	//Set Pause
+	OnPauseAsked.Broadcast();
 }
 #pragma endregion

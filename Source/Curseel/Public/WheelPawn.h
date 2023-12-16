@@ -16,6 +16,8 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "WheelPawn.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPauseAskedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInteractDelegate);
 UCLASS()
 class CURSEEL_API AWheelPawn : public APawnBase {
 	GENERATED_BODY()
@@ -23,6 +25,25 @@ public:
 	AWheelPawn(const class FObjectInitializer& ObjectInitializer);
 protected:
 #pragma region Components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCapsuleComponent> CapsuleComponent;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USpringArmComponent* SpringArmComp;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UCameraComponent* CamComp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<USceneComponent> WheelCenter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> LeftCharacterRoot;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> FrontCharacterRoot;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> RightCharacterRoot;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> LeftCharacterMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -34,24 +55,34 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UFloatingPawnMovement> FloatingMovement;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UCapsuleComponent> CapsuleComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class USpringArmComponent* SpringArmComp;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class UCameraComponent* CamComp;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class USceneComponent* WheelCenter;
 	
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<TObjectPtr<USkeletalMeshComponent>> Characters;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<TObjectPtr<USceneComponent>> CharactersRoot;
+
 	APlayerController* PC;
 	bool IsUsingGamepad() const;
 #pragma endregion
+	virtual void BeginPlay() override;
+
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+
+#pragma region ASC
+	//Added in Abilities in Begin Play
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
+	TSubclassOf<class UCharacterGameplayAbility> AttackAbility; 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
+	TSubclassOf<class UCharacterGameplayAbility> TurnLeftAbility;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
+	TSubclassOf<class UCharacterGameplayAbility> TurnRightAbility;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
+	TSubclassOf<class UCharacterGameplayAbility> DashAbility;
+#pragma endregion
 
 
 #pragma region Characters
@@ -62,11 +93,16 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WheelPawn")
 	int CurrentCharacterIndex = 1;
 
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WheelPawn")
+	TArray<TSubclassOf<class AActor>> CharactersAttackAOE;
+
 	UFUNCTION(BlueprintCallable, Category = "WheelPawn")
 	void TurnWheel(bool bCW);
 	void UpdateWheelFormation();
-	void SetCharPos(TObjectPtr<USkeletalMeshComponent> Char, FVector Pos);
+	void SetRootPos(TObjectPtr<USceneComponent> Root, FVector Pos);
 #pragma endregion
+
 
 #pragma region Inputs
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
@@ -88,5 +124,14 @@ protected:
 
 	//System
 	void Pause(const FInputActionValue& Value);
+#pragma endregion
+
+
+#pragma region Delegates
+	UPROPERTY(BlueprintAssignable, Category = "Wheel|Actions")
+	FPauseAskedDelegate OnPauseAsked;
+	UPROPERTY(BlueprintAssignable, Category = "Wheel|Actions")
+	FInteractDelegate OnInteract;
+
 #pragma endregion
 };
