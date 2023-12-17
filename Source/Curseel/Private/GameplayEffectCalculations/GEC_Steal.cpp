@@ -72,18 +72,18 @@ void UGEC_Steal::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	float HealthSteal = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FTargetStealCapture().HealthStealDef, EvaluationParameters, HealthSteal);
-	float HealthStealPotency = 0.0f;
+	float HealthStealPotency = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FTargetStealCapture().HealthStealPotencyDef, EvaluationParameters, HealthStealPotency);
 	float ShieldSteal = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FTargetStealCapture().ShieldStealDef, EvaluationParameters, ShieldSteal);
-	float ShieldStealPotency = 0.0f;
+	float ShieldStealPotency = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FTargetStealCapture().ShieldStealPotencyDef, EvaluationParameters, ShieldStealPotency);
 
 	//Source
-	float StealResistance = 0.0f;
+	float StealResistance = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FSourceStealCapture().StealResistanceDef, EvaluationParameters, StealResistance);
 

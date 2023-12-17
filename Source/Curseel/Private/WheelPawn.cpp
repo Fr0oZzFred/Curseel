@@ -125,6 +125,7 @@ void AWheelPawn::BeginPlay() {
 	Abilities.Add(TurnRightAbility);
 	Abilities.Add(DashAbility);
 	Super::BeginPlay();
+	FloatingMovement->MaxSpeed = GetMoveSpeed();
 }
 
 void AWheelPawn::OnConstruction(const FTransform& Transform) {
@@ -262,5 +263,9 @@ void AWheelPawn::Turn(const FInputActionValue& Value) {
 //System
 void AWheelPawn::Pause(const FInputActionValue& Value) {
 	OnPauseAsked.Broadcast();
+}
+void AWheelPawn::MoveSpeedChanged(const FOnAttributeChangeData& Data) {
+	Super::MoveSpeedChanged(Data);
+	FloatingMovement->MaxSpeed = Data.NewValue;
 }
 #pragma endregion

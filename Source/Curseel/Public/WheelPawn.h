@@ -14,10 +14,12 @@
 #include "CommonInputSubsystem.h"
 #include "CommonInputTypeEnum.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "CharacterAttack.h"
 #include "WheelPawn.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPauseAskedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInteractDelegate);
+
 UCLASS()
 class CURSEEL_API AWheelPawn : public APawnBase {
 	GENERATED_BODY()
@@ -95,7 +97,7 @@ protected:
 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WheelPawn")
-	TArray<TSubclassOf<class AActor>> CharactersAttackAOE;
+	TArray<class UCharacterAttack*> CharactersAttack;
 
 	UFUNCTION(BlueprintCallable, Category = "WheelPawn")
 	void TurnWheel(bool bCW);
@@ -128,6 +130,9 @@ protected:
 
 
 #pragma region Delegates
+	virtual void MoveSpeedChanged(const FOnAttributeChangeData& Data);
+
+
 	UPROPERTY(BlueprintAssignable, Category = "Wheel|Actions")
 	FPauseAskedDelegate OnPauseAsked;
 	UPROPERTY(BlueprintAssignable, Category = "Wheel|Actions")

@@ -49,7 +49,7 @@ void ACharacterBase::BeginPlay() {
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACharacterBase::StunTagChanged);
 
 	SetHealth(GetMaxHealth());
-	//SetShield(GetMaxShield());
+	GetCharacterMovement()->MaxWalkSpeed = GetMoveSpeed();
 }
 
 #pragma region ASC
@@ -138,6 +138,8 @@ void ACharacterBase::HealthChanged(const FOnAttributeChangeData& Data) {
 
 void ACharacterBase::MoveSpeedChanged(const FOnAttributeChangeData& Data) {
 	OnCharacterMoveSpeedChanged.Broadcast(this);
+
+	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
 }
 
 void ACharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) {

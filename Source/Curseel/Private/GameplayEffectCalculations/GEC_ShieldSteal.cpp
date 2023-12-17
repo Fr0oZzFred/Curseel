@@ -64,12 +64,12 @@ void UGEC_ShieldSteal::Execute_Implementation(const FGameplayEffectCustomExecuti
 	ShieldSteal += FMath::Max<float>(Spec.GetSetByCallerMagnitude(
 		FGameplayTag::RequestGameplayTag(FName("Data.ShieldSteal")), false, -1.0f), 0.0f);
 
-	float ShieldStealPotency = 0.0f;
+	float ShieldStealPotency = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FTargetShieldStealCapture().ShieldStealPotencyDef, EvaluationParameters, ShieldStealPotency);
 
 	//Source
-	float StealResistance = 0.0f;
+	float StealResistance = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FSourceShieldStealCapture().StealResistanceDef, EvaluationParameters, StealResistance);
 

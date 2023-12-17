@@ -65,7 +65,7 @@ void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPar
 	Attack += FMath::Max<float>(Spec.GetSetByCallerMagnitude(
 		FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
 
-	float AttackPotency = 0.0f;
+	float AttackPotency = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FSourceCapture().AttackPotencyDef, EvaluationParameters, AttackPotency);
 	
@@ -77,7 +77,7 @@ void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPar
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FTargetCapture().ShieldDef, EvaluationParameters, Shield);
 	
-	float AttackResistance = 0.0f;
+	float AttackResistance = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FTargetCapture().AttackResistanceDef, EvaluationParameters, AttackResistance);
 	

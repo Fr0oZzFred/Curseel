@@ -63,12 +63,12 @@ void UGEC_HealthSteal::Execute_Implementation(const FGameplayEffectCustomExecuti
 	HealthSteal += FMath::Max<float>(Spec.GetSetByCallerMagnitude(
 		FGameplayTag::RequestGameplayTag(FName("Data.HealthSteal")), false, -1.0f), 0.0f);
 
-	float HealthStealPotency = 0.0f;
+	float HealthStealPotency = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FTargetHealthStealCapture().HealthStealPotencyDef, EvaluationParameters, HealthStealPotency);
 
 	//Source
-	float StealResistance = 0.0f;
+	float StealResistance = 1.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FSourceHealthStealCapture().StealResistanceDef, EvaluationParameters, StealResistance);
 
