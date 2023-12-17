@@ -1,71 +1,107 @@
 #include "Characters/Abilities/GEC_Damage.h"
 
-struct FDamageStatics {
-	//DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
-	//DECLARE_ATTRIBUTE_CAPTUREDEF(DamageBuff);
-	//DECLARE_ATTRIBUTE_CAPTUREDEF(DamageReduction);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
+struct FSourceCapture {
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Attack);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(AttackPotency);
 
-	FDamageStatics() {
-		//DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Damage, Source, false);
-		//DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, DamageBuff, Source, false);
-		//DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, DamageReduction, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Health, Source, false);
+	FSourceCapture() {
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Attack, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, AttackPotency, Source, false);
+	}
+};
+struct FTargetCapture {
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Shield);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(AttackResistance);
+
+	FTargetCapture() {
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Health, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, Shield, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, AttackResistance, Target, false);
 	}
 };
 
-static const FDamageStatics& DamageStatics() {
-	static FDamageStatics DStatics;
-	return DStatics;
+static const FSourceCapture& SourceCapture() {
+	static FSourceCapture SourceCapture;
+	return SourceCapture;
+}
+static const FTargetCapture& TargetCapture() {
+	static FTargetCapture TargetCapture;
+	return TargetCapture;
 }
 
 UGEC_Damage::UGEC_Damage() {
-	//RelevantAttributesToCapture.Add(DamageStatics().DamageDef);
-	//RelevantAttributesToCapture.Add(DamageStatics().DamageBuffDef);
-	//RelevantAttributesToCapture.Add(DamageStatics().DamageReductionDef);
-	RelevantAttributesToCapture.Add(DamageStatics().HealthDef);
+	RelevantAttributesToCapture.Add(FSourceCapture().AttackDef);
+	RelevantAttributesToCapture.Add(FSourceCapture().AttackPotencyDef);
+	
+	
+	RelevantAttributesToCapture.Add(FTargetCapture().HealthDef);
+	RelevantAttributesToCapture.Add(FTargetCapture().ShieldDef);
+	RelevantAttributesToCapture.Add(FTargetCapture().AttackResistanceDef);
 }
 
 
 void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const {
 	UAbilitySystemComponent* SourceAbilitySystemComponent = ExecutionParams.GetSourceAbilitySystemComponent();
 	UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
-
+	
 	AActor* SourceActor = SourceAbilitySystemComponent ? SourceAbilitySystemComponent->GetAvatarActor() : nullptr;
 	AActor* TargetActor = TargetAbilitySystemComponent ? TargetAbilitySystemComponent->GetAvatarActor() : nullptr;
-
+	
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
-
+	
 	// Gather the tags from the source and target as that can affect which buffs should be used
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
-
+	
 	FAggregatorEvaluateParameters EvaluationParameters;
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
-
-
-
-	float Damage = 0.0f;
-	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageDef, EvaluationParameters, Damage);
+	
+	//Source
+	float Attack = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		FSourceCapture().AttackDef, EvaluationParameters, Attack);
+	//Attack += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+	float AttackPotency = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		FSourceCapture().AttackPotencyDef, EvaluationParameters, AttackPotency);
+	
+	//Target
+	float Health = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		FTargetCapture().HealthDef, EvaluationParameters, Health);
+	float Shield = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		FTargetCapture().ShieldDef, EvaluationParameters, Shield);
+	
+	float AttackResistance = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		FTargetCapture().AttackResistanceDef, EvaluationParameters, AttackResistance);
+	
+	//Boosted Damage
+	float SourceDamage = Attack * AttackPotency;
+	
+	//Mitigated Damage
+	SourceDamage *= AttackResistance;
 	
 	
-	Damage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+	//Damage
+	float Damage = Shield - SourceDamage;
+	
+	if (Damage == 0.0f) return;
 
-
-	float DamageBuff = 0.0f;
-	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageBuffDef, EvaluationParameters, DamageBuff);
-
-	float DamageReduction = 0.0f;
-	//ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageReductionDef, EvaluationParameters, DamageReduction);
-
-	float BaseDamage = Damage;
-
-	float ModifiedDamage = BaseDamage * DamageBuff * DamageReduction;
-
-	if (ModifiedDamage < 0.0f) ModifiedDamage = 0.0f;
-
-	ModifiedDamage = 100.0f;
-	// Set the Target's damage meta attribute
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -ModifiedDamage));
+	//Damage Health
+	if (Damage < 0.0f) {
+		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
+			FTargetCapture().HealthProperty, EGameplayModOp::Additive, Damage));
+	
+		//Damage Shield
+		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
+			FTargetCapture().ShieldProperty, EGameplayModOp::Additive, -Shield));
+	} else {
+		//Damage Shield
+		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
+			FTargetCapture().ShieldProperty, EGameplayModOp::Additive, -Damage));
+	}
 }

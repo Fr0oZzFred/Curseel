@@ -91,14 +91,55 @@ void UAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	Super::PostGameplayEffectExecute(Data);
 	if (!Data.Target.IsValidLowLevel()) return;
 
-	//Clamp Attributes
-	// 
-	// Removed for new wheel mechanic
-	//if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
-	//	SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
-	//}
-	//!!!!!!!!!!!!!!!!!!!!			Needs to be updated			!!!!!!!!!!!!!!!!!!!!!!
-	if (Data.EvaluatedData.Attribute == GetMoveSpeedAttribute()) {
-		SetMoveSpeed(FMath::Abs(GetMoveSpeed()));
+
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetMaxHealthAttribute()) {
+		SetMaxHealth(FMath::Abs(GetMaxHealth()));
+	}
+
+	else if (Data.EvaluatedData.Attribute == GetShieldAttribute()) {
+		SetShield(FMath::Clamp(GetShield(), 0.0f, GetMaxShield()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetMaxShieldAttribute()) {
+		SetMaxShield(FMath::Abs(GetMaxShield()));
+	}
+
+	if (Data.EvaluatedData.Attribute == GetAttackAttribute()) {
+		SetAttack(FMath::Abs(GetAttack()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetAttackSpeedAttribute()) {
+		SetAttackSpeed(FMath::Clamp(GetAttackSpeed(), 0.1f, 10.0f));
+	}
+	else if (Data.EvaluatedData.Attribute == GetAttackPotencyAttribute()) {
+		SetAttackPotency(FMath::Clamp(GetAttackPotency(), 0.0f, 10.0f));
+	}
+
+	else if (Data.EvaluatedData.Attribute == GetHealthStealAttribute()) {
+		SetHealthSteal(FMath::Abs(GetHealthSteal()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetHealthStealPotencyAttribute()) {
+		SetHealthStealPotency(FMath::Clamp(GetHealthStealPotency(), 0.0f, 10.0f));
+	}
+	else if (Data.EvaluatedData.Attribute == GetShieldStealAttribute()) {
+		SetShieldSteal(FMath::Abs(GetShieldSteal()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetShieldStealPotencyAttribute()) {
+		SetShieldStealPotency(FMath::Clamp(GetShieldStealPotency(), 0.0f, 10.0f));
+	}
+
+	else if (Data.EvaluatedData.Attribute == GetAttackResistanceAttribute()) {
+		SetAttackResistance(FMath::Clamp(GetAttackResistance(), 0.0f, 10.0f));
+	}
+	else if (Data.EvaluatedData.Attribute == GetStealResistanceAttribute()) {
+		SetStealResistance(FMath::Clamp(GetStealResistance(), 0.0f, 10.0f));
+	}
+
+	else if (Data.EvaluatedData.Attribute == GetMoveSpeedAttribute()) {
+		SetMoveSpeed(FMath::Clamp(GetMoveSpeed(), 0.0f, 1800.0f));
+	}
+	else if (Data.EvaluatedData.Attribute == GetDashPowerAttribute()) {
+		SetDashPower(FMath::Abs(GetDashPower()));
 	}
 }

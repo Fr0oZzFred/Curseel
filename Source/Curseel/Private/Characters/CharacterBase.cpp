@@ -49,6 +49,7 @@ void ACharacterBase::BeginPlay() {
 	AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ACharacterBase::StunTagChanged);
 
 	SetHealth(GetMaxHealth());
+	//SetShield(GetMaxShield());
 }
 
 #pragma region ASC

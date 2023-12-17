@@ -8,7 +8,7 @@
 
 UCLASS()
 class CURSEEL_API UCurseelBlueprintFunctionLibrary : public UBlueprintFunctionLibrary {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
 	UFUNCTION(BlueprintPure, Category = "Curseel Functions")
 	static AWheelPawn* GetWheel();
