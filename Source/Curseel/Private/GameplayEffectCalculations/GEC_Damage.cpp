@@ -1,4 +1,4 @@
-#include "Characters/Abilities/GEC_Damage.h"
+#include "GameplayEffectCalculations/GEC_Damage.h"
 
 struct FSourceCapture {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Attack);
@@ -62,7 +62,9 @@ void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPar
 	float Attack = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FSourceCapture().AttackDef, EvaluationParameters, Attack);
-	//Attack += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+	Attack += FMath::Max<float>(Spec.GetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+
 	float AttackPotency = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FSourceCapture().AttackPotencyDef, EvaluationParameters, AttackPotency);
@@ -88,8 +90,6 @@ void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPar
 	
 	//Damage
 	float Damage = Shield - SourceDamage;
-	
-	if (Damage == 0.0f) return;
 
 	//Damage Health
 	if (Damage < 0.0f) {
@@ -102,6 +102,6 @@ void UGEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPar
 	} else {
 		//Damage Shield
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
-			FTargetCapture().ShieldProperty, EGameplayModOp::Additive, -Damage));
+			FTargetCapture().ShieldProperty, EGameplayModOp::Additive, -SourceDamage));
 	}
 }

@@ -1,11 +1,9 @@
-#include "GEC_Steal.h"
+#include "GameplayEffectCalculations/GEC_Steal.h"
 
 struct FSourceStealCapture {
-	DECLARE_ATTRIBUTE_CAPTUREDEF(AttackResistance);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(StealResistance);
 
 	FSourceStealCapture() {
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, AttackResistance, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAttributeSetBase, StealResistance, Source, false);
 	}
 };
@@ -39,7 +37,6 @@ static const FTargetStealCapture& TargetStealCapture() {
 }
 
 UGEC_Steal::UGEC_Steal() {
-	RelevantAttributesToCapture.Add(FSourceStealCapture().AttackResistanceDef);
 	RelevantAttributesToCapture.Add(FSourceStealCapture().StealResistanceDef);
 
 
@@ -86,9 +83,6 @@ void UGEC_Steal::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 		FTargetStealCapture().ShieldStealPotencyDef, EvaluationParameters, ShieldStealPotency);
 
 	//Source
-	float AttackResistance = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
-		FSourceStealCapture().AttackResistanceDef, EvaluationParameters, AttackResistance);
 	float StealResistance = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		FSourceStealCapture().StealResistanceDef, EvaluationParameters, StealResistance);

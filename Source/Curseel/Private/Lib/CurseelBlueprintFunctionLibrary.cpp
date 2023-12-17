@@ -19,3 +19,15 @@ void UCurseelBlueprintFunctionLibrary::FocusUI(APlayerController* PC) {
     PC->SetInputMode(FInputModeUIOnly());
     PC->SetShowMouseCursor(true);
 }
+
+UAbilitySystemComponent* UCurseelBlueprintFunctionLibrary::GetCurseelASC(AActor* Actor) {
+    ACharacterBase* Character = Cast<ACharacterBase>(Actor);
+    if (Character)
+        return Character->GetAbilitySystemComponent();
+
+    APawnBase* Pawn = Cast<APawnBase>(Actor);
+    if (Pawn)
+        return Pawn->GetAbilitySystemComponent();
+
+    return nullptr;
+}

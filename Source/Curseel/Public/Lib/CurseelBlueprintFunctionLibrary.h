@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "WheelPawn.h"
+#include "Characters/CharacterBase.h"
 #include "UObject/UObjectIterator.h"
 #include "CurseelBlueprintFunctionLibrary.generated.h"
 
@@ -19,4 +20,7 @@ class CURSEEL_API UCurseelBlueprintFunctionLibrary : public UBlueprintFunctionLi
 
 	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
 	static void FocusUI(APlayerController* PC);
+
+	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
+	static UAbilitySystemComponent* GetCurseelASC(AActor* Actor);
 };
