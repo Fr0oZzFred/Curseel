@@ -103,6 +103,8 @@ protected:
 	void TurnWheel(bool bCW);
 	void UpdateWheelFormation();
 	void SetRootPos(TObjectPtr<USceneComponent> Root, FVector Pos);
+	UPROPERTY(BlueprintReadOnly, Category = "WheelPawn")
+	FVector AimDirection;
 #pragma endregion
 
 

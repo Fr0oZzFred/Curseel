@@ -224,6 +224,7 @@ void AWheelPawn::Orient(const FInputActionValue& Value) {
 	FVector2D v = Value.Get <FVector2D>();
 
 	if (IsUsingGamepad()) {
+		AimDirection = FVector(v.Y, -v.X, 0.0f);
 		WheelCenter->SetRelativeRotation(FRotator(0.0, -UKismetMathLibrary::DegAtan2(v.X, v.Y), 0.0));
 		return;
 	}
@@ -235,6 +236,7 @@ void AWheelPawn::Orient(const FInputActionValue& Value) {
 		PC,WheelCenter->GetComponentLocation(), WheelScreenPos, false);
 	WheelScreenPos -= MousePos;
 	WheelScreenPos.Normalize();
+	AimDirection = FVector(WheelScreenPos.Y, -WheelScreenPos.X, 0.0f);
 
 	WheelCenter->SetRelativeRotation(FRotator(
 		0.0, -UKismetMathLibrary::DegAtan2(WheelScreenPos.X, WheelScreenPos.Y), 0.0));
