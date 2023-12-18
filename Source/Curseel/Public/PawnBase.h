@@ -146,6 +146,8 @@ protected:
 	float GetMoveSpeed() const;
 	UFUNCTION(BlueprintCallable, Category = "GAS|Pawns|Attributes")
 	float GetDashPower() const;
+	UFUNCTION(BlueprintCallable, Category = "GAS|Pawns|Attributes")
+	float GetDashCooldown() const;
 #pragma endregion
 
 #pragma region SetAttributes
@@ -189,5 +191,7 @@ protected:
 	void SetMoveSpeed(float NewValue);
 	UFUNCTION(BlueprintCallable, Category = "GAS|Pawns|Attributes|Hardcode")
 	void SetDashPower(float NewValue);
+	UFUNCTION(BlueprintCallable, Category = "GAS|Pawns|Attributes|Hardcode")
+	void SetDashCooldown(float NewValue);
 #pragma endregion
 };

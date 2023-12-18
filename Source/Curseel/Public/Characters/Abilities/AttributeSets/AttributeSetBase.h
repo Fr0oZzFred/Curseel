@@ -90,6 +90,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_DashPower)
 	FGameplayAttributeData DashPower;
 	ATTRIBUTE_ACCESSORS(UAttributeSetBase, DashPower)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", ReplicatedUsing = OnRep_DashCooldown)
+	FGameplayAttributeData DashCooldown;
+	ATTRIBUTE_ACCESSORS(UAttributeSetBase, DashCooldown)
 #pragma endregion
 
 #pragma region Attributes Replications
@@ -128,6 +132,8 @@ public:
 	virtual void OnRep_MoveSpeed(const FGameplayAttributeData& OlMoveSpeed);
 	UFUNCTION()
 	virtual void OnRep_DashPower(const FGameplayAttributeData& OldDashPower);
+	UFUNCTION()
+	virtual void OnRep_DashCooldown(const FGameplayAttributeData& OldDashCooldown);
 
 
 #pragma endregion

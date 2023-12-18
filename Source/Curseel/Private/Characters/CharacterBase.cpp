@@ -211,6 +211,9 @@ float ACharacterBase::GetMoveSpeed() const {
 float ACharacterBase::GetDashPower() const {
 	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDashPower() : 0.0f;
 }
+float ACharacterBase::GetDashCooldown() const {
+	return AttributeSetBase.IsValid() ? AttributeSetBase->GetDashCooldown() : 0.0f;
+}
 #pragma endregion
 
 #pragma region Hardcode
@@ -263,5 +266,8 @@ void ACharacterBase::SetMoveSpeed(float NewValue) {
 }
 void ACharacterBase::SetDashPower(float NewValue) {
 	if (AttributeSetBase.IsValid()) AttributeSetBase->SetDashPower(NewValue);
+}
+void ACharacterBase::SetDashCooldown(float NewValue) {
+	if (AttributeSetBase.IsValid()) AttributeSetBase->SetDashCooldown(NewValue);
 }
 #pragma endregion

@@ -53,4 +53,6 @@ class CURSEEL_API UCurseelBlueprintFunctionLibrary : public UBlueprintFunctionLi
 
 	UFUNCTION(BlueprintPure, Category = "Curseel Functions")
 	static float InverseLerp(float X, float Y, float Value);
+	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
+	static void GetRandomNames(int Number, const TArray<FName>& InNames, TArray<FName>& OutNames);
 };

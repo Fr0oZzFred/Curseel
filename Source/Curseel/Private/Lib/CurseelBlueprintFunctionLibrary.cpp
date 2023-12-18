@@ -64,3 +64,15 @@ FActiveGameplayEffectHandle UCurseelBlueprintFunctionLibrary::ApplyEffect(FGamep
 float UCurseelBlueprintFunctionLibrary::InverseLerp(float X, float Y, float Value) {
     return (Value - X) / (Y - X);
 }
+
+void UCurseelBlueprintFunctionLibrary::GetRandomNames(int Number, const TArray<FName>& InNames, TArray<FName>& OutNames) {
+    if (Number == 0) return;
+    
+    int r = FMath::RandRange(0, InNames.Num() - 1);
+    for (int i = 0; i < Number; i++) {
+        while (OutNames.Find(InNames[r]) != INDEX_NONE) {
+            r = FMath::RandRange(0, InNames.Num() - 1);
+        }
+        OutNames.Add(InNames[r]);
+    }
+}

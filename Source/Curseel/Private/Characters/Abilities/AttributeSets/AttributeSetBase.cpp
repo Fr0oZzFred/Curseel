@@ -54,6 +54,9 @@ void UAttributeSetBase::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpe
 void UAttributeSetBase::OnRep_DashPower(const FGameplayAttributeData& OldDashPower) {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetBase, DashPower, OldDashPower);
 }
+void UAttributeSetBase::OnRep_DashCooldown(const FGameplayAttributeData& OldDashCooldown) {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAttributeSetBase, DashCooldown, OldDashCooldown);
+}
 #pragma endregion
 
 void UAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
@@ -78,6 +81,7 @@ void UAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetBase, MoveSpeed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetBase, DashPower, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSetBase, DashCooldown, COND_None, REPNOTIFY_Always);
 }
 
 void UAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) {
@@ -106,7 +110,7 @@ void UAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		SetMaxShield(FMath::Abs(GetMaxShield()));
 	}
 
-	if (Data.EvaluatedData.Attribute == GetAttackAttribute()) {
+	else if (Data.EvaluatedData.Attribute == GetAttackAttribute()) {
 		SetAttack(FMath::Abs(GetAttack()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetAttackSpeedAttribute()) {
@@ -141,5 +145,8 @@ void UAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetDashPowerAttribute()) {
 		SetDashPower(FMath::Abs(GetDashPower()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetDashCooldownAttribute()) {
+		SetDashCooldown(FMath::Clamp(GetDashCooldown(), 0.1f, 10.0f));
 	}
 }
