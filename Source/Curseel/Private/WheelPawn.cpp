@@ -160,6 +160,7 @@ void AWheelPawn::TurnWheel(bool bCW) {
 	CurrentCharacterIndex %= 3;
 
 	UpdateWheelFormation();
+	OnTurn.Broadcast(this, bCW);
 }
 
 void AWheelPawn::UpdateWheelFormation() {

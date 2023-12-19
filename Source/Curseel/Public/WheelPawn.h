@@ -19,6 +19,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPauseAskedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInteractDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTurnDelegate, AWheelPawn*, Wheel, bool, Clockwise);
 
 UCLASS()
 class CURSEEL_API AWheelPawn : public APawnBase {
@@ -139,6 +140,8 @@ protected:
 	FPauseAskedDelegate OnPauseAsked;
 	UPROPERTY(BlueprintAssignable, Category = "Wheel|Actions")
 	FInteractDelegate OnInteract;
+	UPROPERTY(BlueprintAssignable, Category = "Wheel|Actions")
+	FTurnDelegate OnTurn;
 
 #pragma endregion
 };
