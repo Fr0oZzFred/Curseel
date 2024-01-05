@@ -4,7 +4,7 @@
 #include "Engine/DataAsset.h"
 #include "CharacterInfos.generated.h"
 
-UCLASS()
+UCLASS(BlueprintType)
 class CURSEEL_API UCharacterInfos : public UDataAsset {
 	GENERATED_BODY()
 public:

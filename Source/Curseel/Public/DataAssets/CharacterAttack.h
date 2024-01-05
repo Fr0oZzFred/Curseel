@@ -4,9 +4,8 @@
 #include "Engine/DataAsset.h"
 #include "CharacterAttack.generated.h"
 
-UCLASS()
-class CURSEEL_API UCharacterAttack : public UDataAsset
-{
+UCLASS(BlueprintType)
+class CURSEEL_API UCharacterAttack : public UDataAsset {
 	GENERATED_BODY()
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WheelPawn")

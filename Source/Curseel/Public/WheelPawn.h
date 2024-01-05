@@ -14,7 +14,7 @@
 #include "CommonInputSubsystem.h"
 #include "CommonInputTypeEnum.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
-#include "CharacterAttack.h"
+#include "DataAssets/CharacterAttack.h"
 #include "WheelPawn.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPauseAskedDelegate);
