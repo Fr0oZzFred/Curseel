@@ -44,7 +44,7 @@ FActiveGameplayEffectHandle UCurseelBlueprintFunctionLibrary::ApplyEffect(FGamep
         EffectApplier.EffectTarget == EffectTarget::Target ? EffectApplier.TargetASC : SourceASC;
 
     FGameplayEffectContextHandle EffectContext = EffectApplier.SourceASC->MakeEffectContext();
-    EffectContext.AddSourceObject(EffectApplier.SourceASC);
+    EffectContext.AddSourceObject(EffectApplier.SourceASC->GetAvatarActor());
 
 
     FGameplayEffectSpecHandle NewHandle = EffectApplier.SourceASC->MakeOutgoingSpec(
@@ -75,4 +75,12 @@ void UCurseelBlueprintFunctionLibrary::GetRandomNames(int Number, const TArray<F
         }
         OutNames.Add(InNames[r]);
     }
+}
+
+void UCurseelBlueprintFunctionLibrary::ApplyBoost(UAbilitySystemComponent* ASC, UBoost* Boost) {
+    FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+    EffectContext.AddSourceObject(ASC->GetAvatarActor());
+
+    FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(Boost->Effect, 0.0f, EffectContext);
+    ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }

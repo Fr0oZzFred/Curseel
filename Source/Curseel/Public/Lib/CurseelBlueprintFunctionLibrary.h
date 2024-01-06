@@ -5,6 +5,7 @@
 #include "WheelPawn.h"
 #include "Characters/CharacterBase.h"
 #include "UObject/UObjectIterator.h"
+#include "DataAssets/Boost.h"
 #include "CurseelBlueprintFunctionLibrary.generated.h"
 
 UENUM(BlueprintType)
@@ -55,4 +56,7 @@ class CURSEEL_API UCurseelBlueprintFunctionLibrary : public UBlueprintFunctionLi
 	static float InverseLerp(float X, float Y, float Value);
 	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
 	static void GetRandomNames(int Number, const TArray<FName>& InNames, TArray<FName>& OutNames);
+	
+	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
+	static void ApplyBoost(UAbilitySystemComponent* ASC, UBoost* Boost);
 };

@@ -52,6 +52,7 @@ void APawnBase::BeginPlay() {
 	InitializeAttributes();
 	AddStartupEffects();
 	AddAbilities();
+	AddStartupBoosts();
 
 	// Attribute change callbacks
 	HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &APawnBase::HealthChanged);
@@ -112,6 +113,20 @@ void APawnBase::AddStartupEffects() {
 	}
 
 	AbilitySystemComponent->bStartupEffectsApplied = true;
+}
+
+void APawnBase::AddStartupBoosts() {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid()) {
+		return;
+	}
+
+	for (UBoost* Boost : StartupBoosts) {
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+
+		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Boost->Effect, 0.0f, EffectContext);
+		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	}
 }
 
 void APawnBase::RemoveAbilities() {

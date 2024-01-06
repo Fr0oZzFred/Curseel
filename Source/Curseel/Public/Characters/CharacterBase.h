@@ -8,6 +8,7 @@
 #include "Characters/Abilities/CharacterASC.h"
 #include "Characters/Abilities/CharacterGameplayAbility.h"
 #include "Characters/Abilities/AttributeSets/AttributeSetBase.h"
+#include "DataAssets/Boost.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "CharacterBase.generated.h"
@@ -61,11 +62,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
+	TArray<class UBoost*> StartupBoosts;
+
 	virtual void AddAbilities();
 
 	virtual void InitializeAttributes();
 
 	virtual void AddStartupEffects();
+	virtual void AddStartupBoosts();
 
 	virtual void RemoveAbilities();
 

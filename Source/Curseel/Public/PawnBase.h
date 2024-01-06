@@ -8,6 +8,7 @@
 #include "Characters/Abilities/CharacterASC.h"
 #include "Characters/Abilities/CharacterGameplayAbility.h"
 #include "Characters/Abilities/AttributeSets/AttributeSetBase.h"
+#include "DataAssets/Boost.h"
 #include "PawnBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPawnDiedDelegate, APawnBase*, Pawn);
@@ -66,11 +67,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
+	TArray<class UBoost*> StartupBoosts;
+
 	virtual void AddAbilities();
 
 	virtual void InitializeAttributes();
 
 	virtual void AddStartupEffects();
+	virtual void AddStartupBoosts();
 
 	virtual void RemoveAbilities();
 
