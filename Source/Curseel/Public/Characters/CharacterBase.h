@@ -65,12 +65,17 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Abilities")
 	TArray<class UBoost*> StartupBoosts;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS|Abilities")
+	TArray<class UBoost*> ActiveBoosts;
+
 	virtual void AddAbilities();
 
 	virtual void InitializeAttributes();
 
 	virtual void AddStartupEffects();
 	virtual void AddStartupBoosts();
+	UFUNCTION(BlueprintCallable, Category = "GAS|Characters")
+	virtual void AddBoost(UBoost* Boost);
 
 	virtual void RemoveAbilities();
 

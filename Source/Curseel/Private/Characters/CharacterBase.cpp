@@ -110,12 +110,18 @@ void ACharacterBase::AddStartupBoosts() {
 	}
 
 	for (UBoost* Boost : StartupBoosts) {
-		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-		EffectContext.AddSourceObject(this);
-
-		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Boost->Effect, 0.0f, EffectContext);
-		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		AddBoost(Boost);
 	}
+}
+
+void ACharacterBase::AddBoost(UBoost* Boost) {
+	ActiveBoosts.Add(Boost);
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Boost->Effect, 0.0f, EffectContext);
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }
 
 void ACharacterBase::RemoveAbilities() {
