@@ -84,3 +84,50 @@ void UCurseelBlueprintFunctionLibrary::ApplyBoost(UAbilitySystemComponent* ASC, 
     FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(Boost->Effect, 0.0f, EffectContext);
     ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }
+
+void UCurseelBlueprintFunctionLibrary::GetRandomBoosts(int Number, const TArray<UBoost*>& InBoosts, const TArray<UBoost*>& ActiveBoosts, TArray<UBoost*>& OutBoosts) {
+    if (Number == 0) return;
+    TArray<UBoost*> Boosts = InBoosts;
+    
+    //Change Boosts Drop Rate
+    for (UBoost* B : ActiveBoosts) {
+        if (B->bUnique) Boosts.Remove(B);
+        for (UBoost* Blocked : B->BlockedBoosts) {
+            Boosts.Remove(Blocked);
+        }
+    }
+
+    for (UBoost* Boost : ActiveBoosts) {
+        for (UBoost* Synergy : Boost->SynergyBoosts) {
+            if (Boosts.Find(Synergy) != INDEX_NONE) {
+                Boosts.Add(Synergy);
+            }
+        }
+    }
+
+    //if (true) {
+    //    OutBoosts = Boosts;
+    //    return;
+    //}
+
+
+    //Avoid exceptions
+    if (Boosts.Num() == 0) return;
+    if (Boosts.Num() < Number) {
+        Boosts.Empty();
+        return;
+    }
+    if (Boosts.Num() == Number) {
+        OutBoosts = Boosts;
+        return;
+    }
+
+    //Random
+    int r = FMath::RandRange(0, Boosts.Num() - 1);
+    for (int i = 0; i < Number; i++) {
+        while (OutBoosts.Find(Boosts[r]) != INDEX_NONE) {
+            r = FMath::RandRange(0, Boosts.Num() - 1);
+        }
+        OutBoosts.Add(Boosts[r]);
+    }
+}

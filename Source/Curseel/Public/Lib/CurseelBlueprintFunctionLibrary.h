@@ -59,4 +59,7 @@ class CURSEEL_API UCurseelBlueprintFunctionLibrary : public UBlueprintFunctionLi
 	
 	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
 	static void ApplyBoost(UAbilitySystemComponent* ASC, UBoost* Boost);
+
+	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
+	static void GetRandomBoosts(int Number, const TArray<UBoost*>& InBoosts, const TArray<UBoost*>& ActiveBoosts, TArray<UBoost*>& OutBoosts);
 };
