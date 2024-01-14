@@ -216,7 +216,7 @@ void AWheelPawn::SetRootPos(TObjectPtr<USceneComponent> Root, FVector Pos) {
 }
 #pragma region Inputs
 void AWheelPawn::Move(const FInputActionValue& Value) {
-	FVector2D v = Value.Get<FVector2D>();
+	FVector2D v = LastMoveValue = Value.Get<FVector2D>();
 	FloatingMovement->AddInputVector(UKismetMathLibrary::GetRightVector(GetControlRotation()) * v.X);
 	FloatingMovement->AddInputVector(UKismetMathLibrary::GetForwardVector(GetControlRotation()) * v.Y);
 }

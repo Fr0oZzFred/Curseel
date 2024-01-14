@@ -119,6 +119,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
 	class UInputMappingContext* InputMappingSystem;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
+	FVector2D LastMoveValue;
+
 	//Wheel
 	void Move(const FInputActionValue& Value);
 	void Orient(const FInputActionValue& Value);
