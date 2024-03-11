@@ -12,5 +12,11 @@ public:
 	FText CharacterName;
 
 	UPROPERTY(EditdefaultsOnly, BlueprintReadOnly)
+	FString RichTextStyleName;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FText GetNameWithStyle() const;
+
+	UPROPERTY(EditdefaultsOnly, BlueprintReadOnly)
 	UTexture2D* CharacterIcon;
 };
