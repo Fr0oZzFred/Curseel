@@ -14,7 +14,7 @@ public:
 	UPROPERTY(EditdefaultsOnly, BlueprintReadOnly, Category = "Boost Infos")
 	FText Name;
 
-	UPROPERTY(EditdefaultsOnly, BlueprintReadOnly, Category = "Boost Infos")
+	UPROPERTY(EditdefaultsOnly, BlueprintReadOnly, Category = "Boost Infos", meta = (MultiLine = true))
 	FText Description;
 
 	UPROPERTY(EditdefaultsOnly, BlueprintReadOnly, Category = "Boost Infos")
