@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "GeometryCollection/GeometryCollectionObject.h"
 #include "DestructibleProps.generated.h"
 
 UCLASS(BlueprintType)
@@ -11,9 +10,11 @@ class CURSEEL_API UDestructibleProps : public UDataAsset {
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UStaticMesh* Mesh;
+	TObjectPtr<class UStaticMesh> DestructibleMesh;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<const UGeometryCollection> ALLO;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<class UObject> RestCollection;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<class USoundBase> DestroySound;
 };
