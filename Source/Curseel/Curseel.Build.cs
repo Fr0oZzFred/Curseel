@@ -15,8 +15,8 @@ public class Curseel : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"GameplayAbilities", "GameplayTags", "GameplayTasks",
-			"HTTP", "Json", "JsonUtilities"
-		});
+			"HTTP", "Json", "JsonUtilities", "GeometryCollectionEngine"
+        });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
