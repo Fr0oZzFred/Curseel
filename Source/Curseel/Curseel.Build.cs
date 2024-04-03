@@ -16,7 +16,7 @@ public class Curseel : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"GameplayAbilities", "GameplayTags", "GameplayTasks",
 			"HTTP", "Json", "JsonUtilities", "GeometryCollectionEngine",
-            "FieldSystemEngine"
+            "FieldSystemEngine", "Niagara"
         });
 
 		// Uncomment if you are using Slate UI

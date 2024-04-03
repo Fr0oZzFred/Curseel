@@ -1,14 +1,19 @@
 #include "Dungeon/Props/DestructibleProps.h"
 
 ADestructibleProps::ADestructibleProps() : Super() {
+	if (MeshComponent) {
+		static FName MeshCollisionProfileName(TEXT("PhysicsActor"));
+		MeshComponent->SetCollisionProfileName(MeshCollisionProfileName);
+		MeshComponent->SetSimulatePhysics(true);
+	}
 
 	GeoCollectionComponent = CreateOptionalDefaultSubobject<UGeometryCollectionComponent>(TEXT("PropsDestruction"));
 	if (GeoCollectionComponent) {
 		GeoCollectionComponent->SetupAttachment(MeshComponent);
 		GeoCollectionComponent->SetSimulatePhysics(false);
 		GeoCollectionComponent->bHiddenInGame = true;
-		static FName MeshCollisionProfileName(TEXT("Destructible"));
-		MeshComponent->SetCollisionProfileName(MeshCollisionProfileName);
+		static FName GeoCollectionProfileName(TEXT("Destructible"));
+		GeoCollectionComponent->SetCollisionProfileName(GeoCollectionProfileName);
 		GeoCollectionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	InitDestructibleProps();

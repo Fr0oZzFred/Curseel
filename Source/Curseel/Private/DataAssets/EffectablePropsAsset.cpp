@@ -1,0 +1,2 @@
+#include "DataAssets/EffectablePropsAsset.h"
+
