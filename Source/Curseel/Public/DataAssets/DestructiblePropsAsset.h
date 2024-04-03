@@ -3,10 +3,11 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "GeometryCollection/GeometryCollection.h"
-#include "DestructibleProps.generated.h"
+#include "Field/FieldSystem.h"
+#include "DestructiblePropsAsset.generated.h"
 
 UCLASS(BlueprintType)
-class CURSEEL_API UDestructibleProps : public UDataAsset {
+class CURSEEL_API UDestructiblePropsAsset : public UDataAsset {
 	GENERATED_BODY()
 
 public:
@@ -18,4 +19,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class USoundBase> DestroySound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class AFieldSystemActor> FieldSystem;
 };

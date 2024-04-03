@@ -1,2 +1,0 @@
-#include "DataAssets/DestructibleProps.h"
-
