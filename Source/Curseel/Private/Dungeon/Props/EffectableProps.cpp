@@ -23,6 +23,7 @@ AEffectableProps::AEffectableProps() : Super() {
 
 void AEffectableProps::BeginPlay() {
 	Super::BeginPlay();
+	InitEffectableProps();
 	MeshComponent->OnComponentHit.AddDynamic(this, &AEffectableProps::OnHit);
 }
 
@@ -31,6 +32,35 @@ void AEffectableProps::OnWheelCharacterAOE_Overlaped(AWheelPawn* Wheel) {
 	Super::OnWheelCharacterAOE_Overlaped(Wheel);
 
 
+	//Apply Effect On Wheel
+	UAbilitySystemComponent* ASC = Wheel->GetAbilitySystemComponent();
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+	EffectContext.AddSourceObject(ASC->GetAvatarActor());
+
+	FGameplayEffectSpecHandle NewHandle = ASC->MakeOutgoingSpec(
+		EffectablePropsAsset->Effect, 0.0f, EffectContext);
+
+	if (NewHandle.IsValid()) {
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
+			NewHandle, EffectablePropsAsset->EffectTag, EffectablePropsAsset->EffectMagnitude);
+		FActiveGameplayEffectHandle ActiveGEHandle =
+			ASC->ApplyGameplayEffectSpecToSelf(*NewHandle.Data.Get());
+	}
+
+	//Play Steal
+
+	UGameplayStatics::PlaySound2D(GetWorld(), EffectablePropsAsset->StealSound, 0.5f);
+
+	auto* StealFX = UNiagaraFunctionLibrary::SpawnSystemAttached(EffectablePropsAsset->StealVFX, Wheel->GetRootComponent(),
+		FName("None"), FVector::Zero(), FRotator::ZeroRotator,EAttachLocation::KeepRelativeOffset, true);
+	StealFX->SetVariablePosition(FName("TargetPos"), this->GetActorLocation());
+	StealFX->SetVariableLinearColor(FName("Color"), EffectablePropsAsset->StealColor);
+
+	//OnDestroyVFX
+	StealFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+		EffectablePropsAsset->OnDestroyFX, MeshComponent->GetComponentLocation());
+
+	StealFX->SetVariableLinearColor(FName("Color"), EffectablePropsAsset->DestroyColor);
 }
 
 void AEffectableProps::OnConstruction(const FTransform& Transform) {
@@ -44,6 +74,7 @@ void AEffectableProps::InitEffectableProps() {
 
 
 	VFX_OnHit->SetAsset(EffectablePropsAsset->OnHitFX);
+	VFX_OnHit->SetVariableLinearColor(FName("Color"), EffectablePropsAsset->HitColor);
 	FluidMeshComponent->SetStaticMesh(EffectablePropsAsset->FluidMesh);
 	FluidMeshComponent->SetMaterial(0, EffectablePropsAsset->FluidMeshMat);
 }

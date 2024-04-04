@@ -5,6 +5,7 @@
 #include "NiagaraComponent.h"
 #include "DataAssets/EffectablePropsAsset.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "NiagaraFunctionLibrary.h"
 #include "EffectableProps.generated.h"
 
 UCLASS()

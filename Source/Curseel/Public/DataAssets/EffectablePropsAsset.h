@@ -38,9 +38,9 @@ public:
 	TSubclassOf<class UGameplayEffect> Effect;
 
 	UPROPERTY(EditdefaultsOnly, BlueprintReadOnly, Category = "Effect")
-	FGameplayTag EffectApplier;
+	FGameplayTag EffectTag;
 	UPROPERTY(EditdefaultsOnly, BlueprintReadOnly, Category = "Effect")
-	float EffectMAgnitude;
+	float EffectMagnitude;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	TObjectPtr<UNiagaraSystem> StealVFX;
