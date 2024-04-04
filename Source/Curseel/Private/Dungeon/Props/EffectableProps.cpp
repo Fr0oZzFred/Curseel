@@ -16,6 +16,7 @@ AEffectableProps::AEffectableProps() : Super() {
 	if (VFX_OnHit) {
 		VFX_OnHit->SetAutoActivate(false);
 		VFX_OnHit->SetupAttachment(MeshComponent, TEXT("None"));
+		VFX_OnHit->SetBoundsScale(10.0f);
 	}
 
 	InitEffectableProps();
