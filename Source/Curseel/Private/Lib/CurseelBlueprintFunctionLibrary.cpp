@@ -131,3 +131,13 @@ void UCurseelBlueprintFunctionLibrary::GetRandomBoosts(int Number, const TArray<
         OutBoosts.Add(Boosts[r]);
     }
 }
+
+void UCurseelBlueprintFunctionLibrary::AddCutsceneInput(UEnhancedInputLocalPlayerSubsystem* PS, const UInputMappingContext* ContextToRemove, const UInputMappingContext* ContextToAdd) {
+    PS->RemoveMappingContext(ContextToRemove);
+    PS->AddMappingContext(ContextToAdd, 20);
+}
+
+void UCurseelBlueprintFunctionLibrary::RemoveCutsceneInput(UEnhancedInputLocalPlayerSubsystem* PS, UInputMappingContext* ContextToRemove, const UInputMappingContext* ContextToAdd) {
+    PS->RemoveMappingContext(ContextToRemove);
+    PS->AddMappingContext(ContextToAdd, 0);
+}

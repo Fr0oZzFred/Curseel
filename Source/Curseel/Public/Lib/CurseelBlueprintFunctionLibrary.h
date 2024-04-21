@@ -62,4 +62,10 @@ class CURSEEL_API UCurseelBlueprintFunctionLibrary : public UBlueprintFunctionLi
 
 	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
 	static void GetRandomBoosts(int Number, const TArray<UBoost*>& InBoosts, const TArray<UBoost*>& ActiveBoosts, TArray<UBoost*>& OutBoosts);
+
+	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
+	static void AddCutsceneInput(UEnhancedInputLocalPlayerSubsystem* PS, const UInputMappingContext* ContextToRemove, const UInputMappingContext* ContextToAdd);
+
+	UFUNCTION(BlueprintCallable, Category = "Curseel Functions")
+	static void RemoveCutsceneInput(UEnhancedInputLocalPlayerSubsystem* PS, UInputMappingContext* ContextToRemove, const UInputMappingContext* ContextToAdd);
 };
